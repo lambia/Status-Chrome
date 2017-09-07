@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+
+  "name": "StatusChrome",
+  "description": "Should stop annoying pop-up while watching a movie",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icons/circle.www.png",
+    /*"default_popup": "proto/popup.html",*/
+    "default_title": "Click here!"
+  },
+  "permissions": [
+    "activeTab",
+    "http://*/*",
+    "tabs",
+    "background",
+    "notifications"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
