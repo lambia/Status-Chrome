@@ -1,3 +1,9 @@
+# Development and backup unuseful files
+*.old.*
+*.old
+*.dev.*
+*.dev
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
