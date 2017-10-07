@@ -30,7 +30,7 @@ isActive = false;
 whichTab = false;
 
 var alertOn = { type: "basic", iconUrl: "icons/warning.png", title: "Protection is ON",
-    message: "Opening new windows will now be prevented. \nYou can't as well: script too raw to distinguish." };
+    message: "Opening new windows will now be prevented. \nPress ALT+SHIFT+B to add this website to the 'blacklist'" };
 var alertOff = { type: "basic", iconUrl: "icons/circle.www.png", title: "Protection is OFF",
     message: "Spam is welcome!" };
 
@@ -41,7 +41,7 @@ function toggleMe(){
     chrome.notifications.create("", isActive ? alertOn : alertOff, function(id) {
         timer = setTimeout(function(){ chrome.notifications.clear(id); }, isActive ? 2000 : 700);
     });
-    //ToDo: prompt "want to add current site to blacklist?"
+    //ToDo**: prompt "want to add current site to blacklist?"
 }
 
 //On browserAction click, or keyboard shortcut, or browser closing
@@ -58,6 +58,17 @@ chrome.commands.onCommand.addListener(function (command) {
         debugMe();
     }
 });
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "add") {
+        addToList();
+    }
+});
+chrome.commands.onCommand.addListener(function (command) {
+    if (command === "clean") {
+        cleanList();
+    }
+});
+
 //Prevent the extension from blocking new windows, if the last was closed while the extension still on
 chrome.windows.onRemoved.addListener(function(windowid) {
     chrome.windows.getAll({populate : true}, function (window_list) {
@@ -82,19 +93,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab){
     }
 });
 
-//Test #2, neither working
-//var filter = {url:[{hostContains: "google.it"}]};
-chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
-    var domain = details.url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1]; //http://www.google.com/path/ -> www.google.com
-    var host = domain.toLowerCase().match(/[^.]*\.[^.]{2,3}(?:\.[^.]{2,3})?$/); //www.google.com -> google.com / www.google.cn.com -> google.cn.com
-    
-    if( host && list.indexOf(host)>-1 && !isActive) {
-        toggleMe();
-    }
-}
-//, filter
-);
-
 //On new opened tab
 chrome.tabs.onCreated.addListener(function (tabId, changeInfo, tab){
     //currentWindow "always" work, but lastFocusedWindow should be enough for this scenario
@@ -116,16 +114,20 @@ function setArray(who){
 }
 function getArray(){
     chrome.storage.local.get({'array': []}, function (result) {
-        //Following function will be removed now that I'm passing default value for array
-        //The sense was: list is already declaread as []. If result is an array, assign its values to list
-        //if result is something, push it to the list. otherwise list will remain an empty array
-        //if( Array.isArray(result.array) ) {
-            list = result.array;
-        //} else if ( result.array ) {
-            //list.push( result.array );
-        //}
-        //alert(Array.isArray(list)+"("+list.length+") => "+list);
-        
+        list = result.array;
+
+        var listObj = [];
+        for (var i = 0; i < list.length; i++) {
+            listObj.push( { hostContains: list[i] } );
+        }
+
+        var filter = {url: listObj};
+        chrome.webNavigation.onBeforeNavigate.addListener(function(details) {
+            if(!isActive) {
+                toggleMe();
+            }
+        }, filter);
+
     });
 }
 function clearArray(){
@@ -137,6 +139,25 @@ function debugMe() {
     //getArray();
     //clearArray();
     setDefault();
+    alert("Blacklist set to defaults");
+}
+
+function cleanList() {
+    clearArray();
+    //redundant, just for now
+    alert("Blacklist totally cleaned");
+}
+
+function addToList() {
+    /*
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        var url = tabs[0].url;
+    });
+    alert(url);
+    setArray(url);
+    alert(url);
+    */
+    alert("Not yet working");
 }
 
 function setDefault() {

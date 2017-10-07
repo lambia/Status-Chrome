@@ -24,13 +24,25 @@
     "commands": {
         "toggle" : {
             "suggested_key": {
-                 "default": "Alt+Shift+S" 
+                 "default": "Alt+Shift+A" 
             },
             "description": "Toggle the popup protection"
         },
+        "add" : {
+            "suggested_key": {
+                 "default": "Alt+Shift+B" 
+            },
+            "description": "Add current website to blacklist"
+        },
+        "clean" : {
+            "suggested_key": {
+                 "default": "Alt+Shift+C"
+            },
+            "description": "Clean blacklist"
+        },
         "debug" : {
             "suggested_key": {
-                 "default": "Alt+Shift+D" 
+                 "default": "Alt+Shift+D"
             },
             "description": "Dev Stuff"
         }
