@@ -1,9 +1,9 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 6,
 
     "name": "StatusChrome",
     "description": "Should stop annoying pop-up while watching a movie",
-    "version": "0.0.0.2",
+    "version": "0.0.0.6",
 
     "browser_action": {
         "default_icon": "icons/circle.www.png",
@@ -24,33 +24,33 @@
     "commands": {
         "toggle" : {
             "suggested_key": {
-                 "default": "Alt+Shift+A" 
+                 "default": "Ctrl+1" 
             },
             "description": "Toggle the popup protection"
         },
         "add" : {
             "suggested_key": {
-                 "default": "Alt+Shift+B" 
+                 "default": "Ctrl+2" 
             },
             "description": "Add current website to blacklist"
         },
         "clean" : {
             "suggested_key": {
-                 "default": "Alt+Shift+C"
+                 "default": "Ctrl+3"
             },
             "description": "Clean blacklist"
         },
         "debug" : {
             "suggested_key": {
-                 "default": "Alt+Shift+D"
+                 "default": "Ctrl+4"
             },
             "description": "Dev Stuff"
         }
     },
     "icons": {
-        "16": "icons/circle.www.png", //favicon for tab
-        "32": "icons/circle.www.png", //windows
-        "48": "icons/circle.www.png", //chrome://extensions
-        "128": "icons/circle.www.png" //store
+        "16": "icons/circle.www.png",
+        "32": "icons/circle.www.png",
+        "48": "icons/circle.www.png",
+        "128": "icons/circle.www.png"
     }
 }
