@@ -1,4 +1,6 @@
-Aggiungere badge con numero notifiche
+Numero notifiche persistente (serve per blacklist)
+Nome, icona e marketplace per terminator
+
 La modalità manuale funziona di nuovo ed ora permette di aprire tab vuote.
 La modalità automatica ora è in grado di riconoscere i siti in blacklist.
 Bisogna ri-definire la modalità di funzionamento automatica
