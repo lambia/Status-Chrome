@@ -1,6 +1,7 @@
-La modalità manuale funziona di nuovo.
-La modalità automatica ora è in grado di riconoscere i siti in blacklist e attivare il terminator.
-
+Aggiungere badge con numero notifiche
+La modalità manuale funziona di nuovo ed ora permette di aprire tab vuote.
+La modalità automatica ora è in grado di riconoscere i siti in blacklist.
+Bisogna ri-definire la modalità di funzionamento automatica
 
 Refactoring migliore
 Helpers (es. notify, regex match)

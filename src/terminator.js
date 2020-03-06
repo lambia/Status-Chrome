@@ -5,6 +5,12 @@ class Terminator {
         this.res = new Resources(lang);
         this.isEnabled = false;
         this.setListeners();
+
+        this.browserProtocols = [
+            "chrome://",
+            "brave://",
+            "about:" //about:info, about:config
+        ];
     }
 
     /* Chrome listeners */
@@ -36,9 +42,23 @@ class Terminator {
 
         //On new opened tab
         chrome.tabs.onCreated.addListener(function (tab) {
-            if (self.isEnabled) {
-                chrome.tabs.remove(tab.id);
+            //Se la tab non è vuota (ToDev: .url credo non sia mai necessario)
+            if (tab && (tab.pendingUrl || tab.url) && self.isEnabled) {
+
+                let itsok = false;
+                self.browserProtocols.forEach(function (value, index, array) {
+                    if (tab.pendingUrl.indexOf(value) == 0 || tab.url.indexOf(value) == 0) {
+                        itsok = true;
+                    }
+                });
+
+                if (!itsok) {
+                    //Chiudi la tab
+                    chrome.tabs.remove(tab.id);
+                }
+
             }
+
         });
     }
 

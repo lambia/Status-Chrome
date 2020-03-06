@@ -1,9 +1,10 @@
 import Resources from "../resources/resources.js"
 
 class Vogon {
-    constructor(lang, t800) {
+    constructor(lang) {
         this.res = new Resources(lang);
         this.isEnabled = false;
+        this.blacklistedTabs = [];
         this.setListeners();
 
         this.list = [
@@ -13,7 +14,6 @@ class Vogon {
             "google.it"
         ];
 
-        this.t800 = t800;
         //getArray();
     }
 
@@ -33,51 +33,62 @@ class Vogon {
 
         //On new opened tab
         chrome.tabs.onCreated.addListener(function (tab) {
-            // chrome.tabs.query(
-            //     {
-            //         'active': true,
-            //         //'currentWindow': true	    //"always" work
-            //         'lastFocusedWindow': true	//it's enough
-            //     }, function (tabs) {
-            //         var url = tabs[0].url;
-            //     }
-            // );
+
+            //this.blacklistedTabs
+
+            //Controlla la tab attiva nella finestra con focus
+            chrome.tabs.query(
+                {
+                    'active': true,
+                    //'currentWindow': true	    //"always" work
+                    'lastFocusedWindow': true	//it's enough
+                }, function (tabs) {
+                    //Se non è una tab vuota
+                    if (tabs[0].url && tabs[0].url != "") {
+                        //E la protezione è attiva
+                    }
+                }
+            );
+
+
+
         });
 
         //Check for blacklist on tab update
         chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-
             if (changeInfo.url) { //Using as buffer to avoid multiple firing for single event
-
-                var domain = null;
-                var host = null;
-
-                //Remove protocol and path
-                domain = tab.url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/);
-
-                if (domain && domain.length && domain[0]) {
-                    domain = domain[1];
-                    host = domain.toLowerCase().match(/[^.]*\.[^.]{2,3}(?:\.[^.]{2,3})?$/);
-                    //ToDev: a parte www.domain.ext, proporre all'utente (es. domain.cn.com, www.domain.cn.com, sub.domain.test)
-                }
-
-                if (host && host.length && host[0]) {
-                    host = host[0];
-
-                    //should do two nested for-lopps instead of using indexof on an array
-                    if (self.list.indexOf(host) > -1 && !self.isEnabled) {
-                        self.toggleBlackMode(host);
-                    }
-
-                }
-
+                self.checkUrl(tab.url);
             }
+
         });
     }
 
+    checkUrl(url) {
+        var domain = null;
+        var host = null;
+
+        //Remove protocol and path
+        domain = url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/);
+
+        if (domain && domain.length && domain[0]) {
+            domain = domain[1];
+            host = domain.toLowerCase().match(/[^.]*\.[^.]{2,3}(?:\.[^.]{2,3})?$/);
+            //ToDev: a parte www.domain.ext, proporre all'utente (es. domain.cn.com, www.domain.cn.com, sub.domain.test)
+        }
+
+        if (host && host.length && host[0]) {
+            host = host[0];
+
+            //should do two nested for-lopps instead of using indexof on an array
+            if (this.list.indexOf(host) > -1 && !this.isEnabled) {
+                this.toggleBlackMode(host);
+            }
+
+        }
+    }
+
     toggleBlackMode(site) {
-        let isEnabled = this.t800.isEnabled();
-        this.t800.toggle(); //ToDev: passare il site o rendere indipendente?
+        this.blacklistedTabs.push(site);
 
         // this.isEnabled = !this.isEnabled;
         // let isEnabled = this.isEnabled;
