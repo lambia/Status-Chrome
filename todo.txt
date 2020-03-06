@@ -1,0 +1,23 @@
+La modalità manuale funziona di nuovo.
+La modalità automatica ora è in grado di riconoscere i siti in blacklist e attivare il terminator.
+
+
+Refactoring migliore
+Helpers (es. notify, regex match)
+Listeners, Terminatore, Notify, DomainChecker ecc..
+
+TODO:
+Migliorare bugfix chisura (stato persistente con if window<1)
+Gestire la blacklist
+Save new rules for blacklist
+Create app icon
+Distinguere ctrl+tab, click utente e javascript
+isActive in whichTab, to lock it on one just one tab
+fallback for shortcut already assigned (alert, new one)
+fallback for notifications (if !permissions or !compatibility, go with alert)
+notification onclick -> clear(id)
+users can submit blacklisted website
+chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});
+move from var to let
+
+//https://developer.chrome.com/extensions/tabs#type-Tab
