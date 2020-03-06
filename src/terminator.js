@@ -5,6 +5,8 @@ class Terminator {
         this.res = new Resources(lang);
         this.isEnabled = false;
         this.setListeners();
+        this.killedCounter = -1;
+        this.increaseBadge();
 
         this.browserProtocols = [
             "chrome://",
@@ -55,11 +57,21 @@ class Terminator {
                 if (!itsok) {
                     //Chiudi la tab
                     chrome.tabs.remove(tab.id);
+                    self.increaseBadge();
                 }
 
             }
 
         });
+    }
+
+    increaseBadge() {
+        this.killedCounter++;
+        let badgeText = this.killedCounter.toString();
+        if (this.killedCounter > 9999) { badgeText = "999+"; }
+
+        chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
+        chrome.browserAction.setBadgeText({ text: badgeText });
     }
 
     //Activate/deactivate the protection
