@@ -13,6 +13,7 @@ fallback for notifications (if !permissions or !compatibility, go with alert)
 notification onclick -> clear(id)
 users can submits blacklisted website
 chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});
+move from var to let
 */
 
 /*
@@ -29,27 +30,26 @@ Bugfix: turn off the protection automatically on browser exiting
 //https://developer.chrome.com/extensions/tabs#type-Tab
 /* *************************************************************************************/
 
+/* Resources (move language dictionary to a separate file) *****************************/
+var res = {
+    en: {
+        toggleAlert: {
+            enabledTitle: "Protection is enabled",
+            enabledMessage: "Turn off to be able to open windows again.\nchrome://extensions/shortcuts to activate keyboard shortcuts",
+            enabledIcon: "icons/warning.png",
+            disabledTitle: "Protection is disabled",
+            disabledMessage: "Spam is welcome!",
+            disabledIcon: "icons/circle.www.png"
+        }
+    }
+}
 
 
 /* Configuration variables *************************************************************/
 
-isActive = false;
-whichTab = false;
-
-var alertOn = {
-    type:       "basic",
-    iconUrl:    "icons/warning.png",
-    title:      "Protection: ON",
-    message:    "Turn off to be able to open windows again.\n"+
-                "Go to: chrome://extensions/shortcuts to activate keyboard shortcuts"
-};
-
-var alertOff = {
-    type:       "basic",
-    iconUrl:    "icons/circle.www.png",
-    title:      "Protection: OFF",
-    message:    "Spam is welcome!"
-};
+var isActive = false;
+var whichTab = false;
+var lang = "en";
 
 /* Configuration variables end **********************************************************/
 
@@ -57,7 +57,7 @@ var alertOff = {
 
 /* Define commands **********************************************************************/
 
-chrome.browserAction.onClicked.addListener(function() {
+chrome.browserAction.onClicked.addListener(function () {
     toggleMe(); //On browserAction click, or keyboard shortcut, or browser closing
 });
 
@@ -129,15 +129,15 @@ function cleanList() {
 
 function addToList() {
 */
-    /*
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        var url = tabs[0].url;
-    });
-    alert(url);
-    setArray(url);
-    alert(url);
-    *//*
-    alert("Not yet working");
+/*
+chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+    var url = tabs[0].url;
+});
+alert(url);
+setArray(url);
+alert(url);
+*//*
+alert("Not yet working");
 }
 */
 /* Array/storage functions end **********************************************************/
@@ -147,14 +147,19 @@ function addToList() {
 /* Actual functions *********************************************************************/
 
 //Activate/deactivate the protection
-function toggleMe(){
+function toggleMe() {
     isActive = !isActive;
-    isActive ? chrome.browserAction.setIcon({path: "icons/warning.png"}) : chrome.browserAction.setIcon({path: "icons/circle.www.png"});
+    isActive ? chrome.browserAction.setIcon({ path: "icons/warning.png" }) : chrome.browserAction.setIcon({ path: "icons/circle.www.png" });
     chrome.notifications.create(
         "",
-        isActive ? alertOn : alertOff,
-        function(notificationId) {
-            timer = setTimeout(function(){
+        {
+            type: "basic",
+            iconUrl: isActive ? res[lang].toggleAlert.enabledIcon : res[lang].toggleAlert.disabledIcon,
+            title: isActive ? res[lang].toggleAlert.enabledTitle : res[lang].toggleAlert.disabledTitle,
+            message: isActive ? res[lang].toggleAlert.enabledMessage : res[lang].toggleAlert.disabledMessage
+        },
+        function (notificationId) {
+            timer = setTimeout(function () {
                 chrome.notifications.clear(notificationId);
             }, 1000);
         }
@@ -162,19 +167,19 @@ function toggleMe(){
     //ToDo**: prompt "want to add current site to blacklist?"
 }
 
-function toggleBlackMode(site){
+function toggleBlackMode(site) {
     isActive = !isActive;
-    isActive ? chrome.browserAction.setIcon({path: "icons/warning.png"}) : chrome.browserAction.setIcon({path: "icons/circle.www.png"});
+    isActive ? chrome.browserAction.setIcon({ path: "icons/warning.png" }) : chrome.browserAction.setIcon({ path: "icons/circle.www.png" });
     chrome.notifications.create(
         "",
         isActive ? {
-            type:       "basic",
-            iconUrl:    "icons/warning.png",
-            title:      "Blacklisted site",
-            message:    `Blacklist mode activated for ${site}`
+            type: "basic",
+            iconUrl: "icons/warning.png",
+            title: "Blacklisted site",
+            message: `Blacklist mode activated for ${site}`
         } : alertOff,
-        function(notificationId) {
-            timer = setTimeout(function(){
+        function (notificationId) {
+            timer = setTimeout(function () {
                 chrome.notifications.clear(notificationId);
             }, 1000);
         }
@@ -188,9 +193,9 @@ function debugMe() {
     //clearArray();
     //setDefault();
     alert("Blacklist set to defaults");
-    
+
     //getArray();
-    console.log("default: "+list);
+    console.log("default: " + list);
 }
 
 /* Actual functions end *****************************************************************/
@@ -200,20 +205,20 @@ function debugMe() {
 /* Event handlers ***********************************************************************/
 
 //Prevent the extension from blocking new windows, if the last was closed while the extension still on
-chrome.windows.onRemoved.addListener(function(windowid) {
+chrome.windows.onRemoved.addListener(function (windowid) {
     chrome.windows.getAll(
-        {populate : true},
+        { populate: true },
         function (window_list) {
-            if(window_list<1 && isActive){
+            if (window_list < 1 && isActive) {
                 toggleMe();
             }
         });
 });
 
 //Check for blacklist on tab update
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab){
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
-    if(changeInfo.url) { //Using as buffer to avoid multiple firing for single event
+    if (changeInfo.url) { //Using as buffer to avoid multiple firing for single event
 
         var domain = tab.url.match(/^[\w-]+:\/{2,}\[?([\w\.:-]+)\]?(?::[0-9]*)?/)[1];
         //http://www.google.com/path/ -> www.google.com
@@ -223,9 +228,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab){
 
         //alert( list.indexOf(host));           //don't work, even if host is "google.it". type mismatch or what?
         //alert( list.indexOf("google.it"));    //work
-        
+
         //should do two nested for-lopps instead of using indexof on an array
-        if (host && list.indexOf(host)>-1 && !isActive) {
+        if (host && list.indexOf(host) > -1 && !isActive) {
             //alert(tabId+"#"+host+" is in the blascklist @: "+list.indexOf(host));
             //toggleBlackMode(host);
             //alert("X");
@@ -234,7 +239,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab){
 });
 
 //On new opened tab
-chrome.tabs.onCreated.addListener(function (tab){
+chrome.tabs.onCreated.addListener(function (tab) {
     /*
     chrome.tabs.query(
         {
@@ -247,7 +252,7 @@ chrome.tabs.onCreated.addListener(function (tab){
     );
     */
 
-    if(isActive) {
+    if (isActive) {
         chrome.tabs.remove(tab.id);
     }
 });

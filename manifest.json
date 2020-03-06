@@ -1,13 +1,13 @@
 {
-    "manifest_version": 6,
+    "manifest_version": 2,
 
     "name": "StatusChrome",
     "description": "Should stop annoying pop-up while watching a movie",
-    "version": "0.0.0.6",
+    "version": "0.0.0.8",
 
     "browser_action": {
         "default_icon": "icons/circle.www.png",
-        "default_title": "Click here!"
+        "default_title": "Click to toggle popup protection"
     },
     "permissions": [
         "activeTab",
@@ -22,27 +22,27 @@
         "scripts": ["background.js"]
     },
     "commands": {
-        "toggle" : {
+        "toggle": {
             "suggested_key": {
-                 "default": "Ctrl+1" 
+                "default": "Ctrl+1"
             },
             "description": "Toggle the popup protection"
         },
-        "add" : {
+        "add": {
             "suggested_key": {
-                 "default": "Ctrl+2" 
+                "default": "Ctrl+2"
             },
             "description": "Add current website to blacklist"
         },
-        "clean" : {
+        "clean": {
             "suggested_key": {
-                 "default": "Ctrl+3"
+                "default": "Ctrl+3"
             },
             "description": "Clean blacklist"
         },
-        "debug" : {
+        "debug": {
             "suggested_key": {
-                 "default": "Ctrl+4"
+                "default": "Ctrl+4"
             },
             "description": "Dev Stuff"
         }
