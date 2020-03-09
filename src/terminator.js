@@ -44,25 +44,50 @@ class Terminator {
 
         //On new opened tab
         chrome.tabs.onCreated.addListener(function (tab) {
-            //Se la tab non è vuota (ToDev: .url credo non sia mai necessario)
-            if (tab && (tab.pendingUrl || tab.url) && self.isEnabled) {
+            self.terminate(tab);
+        });
 
-                let itsok = false;
+        //On new opened window
+        chrome.windows.onCreated.addListener(function (window) {
+            self.terminate(window);
+        });
+    }
+
+    terminate(entity) {
+        let self = this;
+
+        //Se la protezione è attiva
+        if (self.isEnabled) {
+            let itsok = false;
+            let urlType = null;
+
+            //Se l'oggetto non è vuota, controlla se ha un url
+            if (entity && entity.pendingUrl){
+                urlType = "pendingUrl";
+            } else if (entity && entity.url){
+                urlType = "url";
+            }
+            
+            //Controlla se l'url è tra i protocolli consentiti
+            if(urlType) {
                 self.browserProtocols.forEach(function (value, index, array) {
-                    if (tab.pendingUrl.indexOf(value) == 0 || tab.url.indexOf(value) == 0) {
+                    if (entity[urlType].indexOf(value) == 0) {
                         itsok = true;
                     }
                 });
-
-                if (!itsok) {
-                    //Chiudi la tab
-                    chrome.tabs.remove(tab.id);
-                    self.increaseBadge();
-                }
-
             }
 
-        });
+            //Se ha un url, e non è ok
+            if(urlType && !itsok) {
+                //Chiudi l'oggetto
+                if(entity.windowId) { //se appartiene a una finestra, è una tab
+                    chrome.tabs.remove(entity.id);
+                } else { //altrimenti finestra
+                    chrome.windows.remove(entity.id);
+                }
+                self.increaseBadge();
+            }
+        }
     }
 
     increaseBadge() {
