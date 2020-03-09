@@ -1,26 +1,38 @@
-Numero notifiche persistente (serve per blacklist)
-Nome, icona e marketplace per terminator
+Rilascio 1.0
+- notifiche con timer corretto
+- Finire test
+- Firefox/Edge (test fattibilità)
+- Nome
+- Icona
+- Rimuovi vogon.js da master
+- Carica su marketplace
 
-La modalità manuale funziona di nuovo ed ora permette di aprire tab vuote.
-La modalità automatica ora è in grado di riconoscere i siti in blacklist.
-Bisogna ri-definire la modalità di funzionamento automatica
+Rilascio 1.1
+- notifiche onclick -> clear(id)
+- Readme
+- Numero notifiche persistente (scrivi come per blacklist)
 
-Refactoring migliore
-Helpers (es. notify, regex match)
-Listeners, Terminatore, Notify, DomainChecker ecc..
+Rilascio 1.5
+- Controlla il chiamante della tab per disabilitare popup in background
 
-TODO:
-Migliorare bugfix chisura (stato persistente con if window<1)
-Gestire la blacklist
-Save new rules for blacklist
-Create app icon
-Distinguere ctrl+tab, click utente e javascript
-isActive in whichTab, to lock it on one just one tab
-fallback for shortcut already assigned (alert, new one)
-fallback for notifications (if !permissions or !compatibility, go with alert)
-notification onclick -> clear(id)
-users can submit blacklisted website
-chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});
-move from var to let
+RC 2.0
+- Una volta riconosciuto in blacklist attiva la protezione finchè in tab
 
-//https://developer.chrome.com/extensions/tabs#type-Tab
+Rilascio 2.0
+- Proponi aggiunta blacklist 
+
+Refactoring
+- Divisione terminator/vogon migliore
+- Helpers (es. notify, regex match)
+- Listeners, Terminatore, Notify, DomainChecker ecc..
+- Cambia i var in let
+
+Miglioramenti
+- Bugfix chiusura (resta attivo durante chiusura, ma fai aprire la finestra)
+- Gestire click sui link
+- Scegli shortcut e fallback
+- fallback notifiche (if !permissions or !compatibility -> alert)
+
+Non ricordo cos'era
+- chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});
+- https://developer.chrome.com/extensions/tabs#type-Tab
