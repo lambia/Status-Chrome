@@ -1,7 +1,8 @@
 Rilascio 1.0
+- Nome e Icona (app) e stati (on/off)
 - Rimuovi vogon.js da master
 - Rimuovi notifiche
-- Nome e Icona
+- Aggiungi console.log
 
 - https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
 
