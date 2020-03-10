@@ -46,45 +46,36 @@ class Terminator {
         chrome.tabs.onCreated.addListener(function (tab) {
             self.terminate(tab);
         });
-
-        //On new opened window
-        chrome.windows.onCreated.addListener(function (window) {
-            self.terminate(window);
-        });
     }
 
-    terminate(entity) {
+    terminate(tab) {
         let self = this;
 
-        //Se la protezione è attiva
-        if (self.isEnabled) {
+        //Se la protezione è attiva e l'oggetto non è vuoto
+        if (self.isEnabled && tab) {
             let itsok = false;
             let urlType = null;
 
-            //Se l'oggetto non è vuota, controlla se ha un url
-            if (entity && entity.pendingUrl){
+            //Controlla se ha un url
+            if (tab.pendingUrl) {
                 urlType = "pendingUrl";
-            } else if (entity && entity.url){
+            } else if (tab.url) {
                 urlType = "url";
             }
-            
+
             //Controlla se l'url è tra i protocolli consentiti
-            if(urlType) {
+            if (urlType) {
                 self.browserProtocols.forEach(function (value, index, array) {
-                    if (entity[urlType].indexOf(value) == 0) {
+                    if (tab[urlType].indexOf(value) == 0) {
                         itsok = true;
                     }
                 });
             }
 
-            //Se ha un url, e non è ok
-            if(urlType && !itsok) {
+            //Se ha un url non ok, o se non ha url
+            if (!itsok) {
                 //Chiudi l'oggetto
-                if(entity.windowId) { //se appartiene a una finestra, è una tab
-                    chrome.tabs.remove(entity.id);
-                } else { //altrimenti finestra
-                    chrome.windows.remove(entity.id);
-                }
+                chrome.tabs.remove(tab.id);
                 self.increaseBadge();
             }
         }
@@ -124,6 +115,13 @@ class Terminator {
             }
         );
         //ToDev: prompt "want to add current site to blacklist?"
+    }
+
+    printData(data, ontop = true) {
+        if (ontop) {
+            alert(JSON.stringify(data, null, 4));
+        }
+        console.log(data);
     }
 
     isEnabled() {
