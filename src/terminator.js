@@ -103,20 +103,6 @@ class Terminator {
             title: isEnabled ? res.browserAction.enabledTitle : res.browserAction.disabledTitle
         });
 
-        chrome.notifications.create(
-            "",
-            {
-                type: "basic",
-                iconUrl: isEnabled ? res.toggleAlert.enabledIcon : res.toggleAlert.disabledIcon,
-                title: isEnabled ? res.toggleAlert.enabledTitle : res.toggleAlert.disabledTitle,
-                message: isEnabled ? res.toggleAlert.enabledMessage : res.toggleAlert.disabledMessage
-            },
-            function (notificationId) { //ToDev: portare in helpers
-                setTimeout(function () {
-                    chrome.notifications.clear(notificationId);
-                }, 1350);
-            }
-        );
         //ToDev: prompt "want to add current site to blacklist?"
     }
 

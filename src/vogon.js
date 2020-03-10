@@ -95,22 +95,7 @@ class Vogon {
         // let isEnabled = this.isEnabled;
         // let res = this.res;
 
-        // chrome.browserAction.setIcon({ path: this.isEnabled ? res.toggleAlert.blacklistedIcon : res.toggleAlert.disabledIcon });
-
-        // chrome.notifications.create(
-        //     "",
-        //     {
-        //         type: "basic",
-        //         iconUrl: isEnabled ? res.toggleAlert.blacklistedIcon : res.toggleAlert.disabledIcon,
-        //         title: isEnabled ? res.toggleAlert.blacklistedTitle : res.toggleAlert.disabledTitle,
-        //         message: isEnabled ? res.toggleAlert.blacklistedMessage + site : res.toggleAlert.disabledMessage
-        //     },
-        //     function (notificationId) {
-        //         setTimeout(function () {
-        //             chrome.notifications.clear(notificationId);
-        //         }, 1000);
-        //     }
-        // );
+        // chrome.browserAction.setIcon({ path: this.isEnabled ? res.blacklistAlert.blacklistedIcon : res.blacklistAlert.disabledIcon });
     }
 
     debug() {
