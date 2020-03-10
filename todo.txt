@@ -1,25 +1,22 @@
 Rilascio 1.0
-- notifiche con timer corretto
-- Finire test
-- Firefox/Edge (test fattibilità)
 - Nome
 - Icona
 - Rimuovi vogon.js da master
 - Carica su marketplace
 
-Rilascio 1.1
-- notifiche onclick -> clear(id)
-- Readme
+- test: firefox ed edge (test fattibilità)
+- test: notifiche (timer/click) su windows doNotDisturb
+- test: arianna
+- test: linux
+
+Rilasci 1.1 - 1.5
+- Readme su github
 - Numero notifiche persistente (scrivi come per blacklist)
-
-Rilascio 1.5
 - Controlla il chiamante della tab (openerTabId) per disabilitare popup in background
-- controllo domini fisso (localhost)
 
-RC 2.0
+Rilasci 2.0 - 2.2
+- whitelist domini fisso (localhost)
 - Una volta riconosciuto in blacklist attiva la protezione finchè in tab
-
-Rilascio 2.0
 - Proponi aggiunta blacklist 
 
 Refactoring

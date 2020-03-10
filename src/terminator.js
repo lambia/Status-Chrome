@@ -111,7 +111,7 @@ class Terminator {
             function (notificationId) { //ToDev: portare in helpers
                 setTimeout(function () {
                     chrome.notifications.clear(notificationId);
-                }, 1000);
+                }, 1350);
             }
         );
         //ToDev: prompt "want to add current site to blacklist?"
