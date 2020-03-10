@@ -3,7 +3,7 @@ var lang = "en";
 
 import terminator from "./terminator.js"
 var t800 = new terminator(lang);
-t800.toggle();
+//t800.toggle();
 
 
 //import vogon from "./vogon.js"

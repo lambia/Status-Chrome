@@ -2,17 +2,17 @@ import Resources from "../resources/resources.js"
 
 class Terminator {
     constructor(lang) {
-        this.res = new Resources(lang);
         this.isEnabled = false;
-        this.setListeners();
-        this.killedCounter = -1;
-        this.increaseBadge();
-
+        this.killedCounter = 0;
+        chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
+        this.res = new Resources(lang);
         this.browserProtocols = [
             "chrome://",
             "brave://",
             "about:" //about:info, about:config
         ];
+
+        this.setListeners();
     }
 
     /* Chrome listeners */
@@ -86,7 +86,6 @@ class Terminator {
         let badgeText = this.killedCounter.toString();
         if (this.killedCounter > 9999) { badgeText = "999+"; }
 
-        chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
         chrome.browserAction.setBadgeText({ text: badgeText });
     }
 
@@ -97,7 +96,11 @@ class Terminator {
         let res = this.res;
 
         chrome.browserAction.setIcon({
-            path: isEnabled ? res.toggleAlert.enabledIcon : res.toggleAlert.disabledIcon
+            path: isEnabled ? res.browserAction.enabledIcon : res.browserAction.disabledIcon
+        });
+
+        chrome.browserAction.setTitle({
+            title: isEnabled ? res.browserAction.enabledTitle : res.browserAction.disabledTitle
         });
 
         chrome.notifications.create(
@@ -115,13 +118,6 @@ class Terminator {
             }
         );
         //ToDev: prompt "want to add current site to blacklist?"
-    }
-
-    printData(data, ontop = true) {
-        if (ontop) {
-            alert(JSON.stringify(data, null, 4));
-        }
-        console.log(data);
     }
 
     isEnabled() {

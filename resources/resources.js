@@ -5,15 +5,21 @@ class Resources {
                 toggleAlert: {
                     enabledTitle: "Protection is enabled",
                     enabledMessage: "Turn off to be able to open windows again.\nchrome://extensions/shortcuts to activate keyboard shortcuts",
-                    enabledIcon: "icons/warning.png",
+                    enabledIcon: "icons/enabled.png",
                     disabledTitle: "Protection is disabled",
                     disabledMessage: "Spam is welcome!",
-                    disabledIcon: "icons/circle.www.png",
+                    disabledIcon: "icons/disabled.png",
                     blacklistedTitle: "Protection is enabled for a blacklisted site",
                     blacklistedMessage: "The website is: ",
-                    blacklistedIcon: "icons/warning.png",
+                    blacklistedIcon: "icons/enabled.png",
+                },
+                browserAction: {
+                    enabledTitle: "Click to disable protection",
+                    disabledTitle: "Click to enable protection",
+                    enabledIcon: "icons/enabled.png",
+                    disabledIcon: "icons/disabled.png",
                 }
-            }
+            },
         };
         return res[lang];
     }

@@ -1,20 +1,28 @@
 Rilascio 1.0
-- Nome
-- Icona
 - Rimuovi vogon.js da master
-- Carica su marketplace
+- Rimuovi notifiche
+- Nome e Icona
 
-- test: firefox ed edge (test fattibilità)
-- test: notifiche (timer/click) su windows doNotDisturb
-- test: arianna
+- https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
+
+- test: notifiche (timer/click) su pc di casa
 - test: linux
+- test: arianna
+- test: firefox ed edge (test)
 
 Rilasci 1.1 - 1.5
+- aggiungi popup con opzioni
+- "yarn global add web-ext"
+- prima di toggle, controlla di avere i permessi, altrimenti richiedili
+- https://github.com/mozilla/webextension-polyfill
+- https://developer.chrome.com/webstore/launching#pre-launch-checklist
+- http://humaan.com/checklist/
 - Readme su github
-- Numero notifiche persistente (scrivi come per blacklist)
+- Numero notifiche persistente (scrivi come per blacklist) (richiede permission "storage")
 - Controlla il chiamante della tab (openerTabId) per disabilitare popup in background
 
 Rilasci 2.0 - 2.2
+- controllo al click del target?
 - whitelist domini fisso (localhost)
 - Una volta riconosciuto in blacklist attiva la protezione finchè in tab
 - Proponi aggiunta blacklist 
@@ -32,5 +40,5 @@ Miglioramenti
 - fallback notifiche (if !permissions or !compatibility -> alert)
 
 Non ricordo cos'era
-- chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});
+- chrome.tabs.executeScript(tab.id, {"file": "findtarget.js"});    -> richiede permission "activeTab"
 - https://developer.chrome.com/extensions/tabs#type-Tab

@@ -10,8 +10,9 @@ class Vogon {
         this.list = [
             "openload.co",
             "vcrypt.net",
-            "eurostreaming.club",
-            "google.it"
+            "streaming",
+            "guardaserie",
+            "google.it" //per debug
         ];
 
         //getArray();
