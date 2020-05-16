@@ -1,4 +1,4 @@
-class Judge {
+class Injector {
     constructor(app) {
         this.app = app;
         this.setListeners();
@@ -37,4 +37,4 @@ class Judge {
 
 }
 
-export default Judge;
+export default Injector;

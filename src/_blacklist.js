@@ -1,6 +1,6 @@
 //import Resources from "../resources/resources.js"
 //Resources non esiste più, usare chrome.i18n
-class Vogon {
+class Blacklist {
     constructor(lang) {
         this.res = new Resources(lang);
         this.isEnabled = false;
@@ -171,4 +171,4 @@ class Vogon {
 
 }
 
-export default Vogon;
+export default Blacklist;

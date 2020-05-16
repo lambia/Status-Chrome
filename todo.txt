@@ -1,5 +1,5 @@
 Rilascio 0.9
-- vogon, helper e resources: rimuovi o usa
+- vogon, helper: rimuovi o usa
 - injector?
 - porta su master la 09
 - Scrivere description per google

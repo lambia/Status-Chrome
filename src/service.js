@@ -1,9 +1,10 @@
+import Resources from "./resources.js"
+
 class Service {
     constructor() {
         this.app = {
             isEnabled: false,
             killedCounter: 0,
-            $t: chrome.i18n.getMessage,
             browserProtocols: [
                 "chrome://",
                 "brave://",
@@ -14,6 +15,8 @@ class Service {
         this.setListeners();
         this.disable();
     }
+
+    $t = (what, override) => new Resources().translator(what, override);
 
     /* Chrome listeners */
     setListeners() {
@@ -51,11 +54,11 @@ class Service {
         this.app.isEnabled = true;
 
         chrome.browserAction.setIcon({
-            path: "icons/on.png"
+            path: this.$t("browserIcon.on", true)
         });
 
         chrome.browserAction.setTitle({
-            title: this.app.$t("uiEnabledTitle")
+            title: this.$t("uiEnabledTitle")
         });
     }
 
@@ -63,11 +66,11 @@ class Service {
         this.app.isEnabled = false;
 
         chrome.browserAction.setIcon({
-            path: "icons/off.png"
+            path: this.$t("browserIcon.off", true)
         });
 
         chrome.browserAction.setTitle({
-            title: this.app.$t("uiDisabledTitle")
+            title: this.$t("uiDisabledTitle")
         });
     }
 
