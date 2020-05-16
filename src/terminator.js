@@ -1,5 +1,3 @@
-//import Resources from "../resources/resources.js"
-
 class Terminator {
     constructor() {
         this.isEnabled = false;
@@ -7,16 +5,6 @@ class Terminator {
         chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
 
         this.$t = chrome.i18n.getMessage;
-        //let $r = new Resources();
-        //let $t = $r.translator;
-        //let x = $t("browserIcon.on", true);
-        //let x = $r.translator("browserIcon.on", true);
-
-        //No autoboxing without babel. so what? function classes?
-        //It's time to go to sleep, tomorrow take a decision
-        // let $x = new Resources();
-        // let x = $x("placeholder", true);
-        // alert(x, true);
 
         this.browserProtocols = [
             "chrome://",
@@ -125,26 +113,34 @@ class Terminator {
         })
     }
 
-    //Activate/deactivate the protection
-    toggle() {
-        this.isEnabled = !this.isEnabled;
-        let isEnabled = this.isEnabled;
-        let $t = this.$t;
+    enable() {
+        this.isEnabled = true;
 
         chrome.browserAction.setIcon({
-            path: isEnabled ? "icons/on.png" : "icons/off.png"
-            //path: isEnabled ? $t("placeholder", true) : $t("placeholder", true)
+            path: "icons/on.png"
         });
 
         chrome.browserAction.setTitle({
-            title: isEnabled ? $t("uiEnabledTitle") : $t("uiDisabledTitle")
+            title: this.$t("uiEnabledTitle")
         });
-
-        //ToDev: integrate vogon and prompt "want to add current site to blacklist?"
     }
 
-    isEnabled() {
-        return this.isEnabled;
+    disable() {
+        this.isEnabled = false;
+
+        chrome.browserAction.setIcon({
+            path: "icons/off.png"
+        });
+
+        chrome.browserAction.setTitle({
+            title: this.$t("uiDisabledTitle")
+        });
+    }
+
+    //Activate/deactivate the protection
+    toggle() {
+        //ToDev: integrate vogon and prompt "want to add current site to blacklist?
+        this.isEnabled ? this.disable() : this.enable();
     }
 
 }

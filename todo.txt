@@ -1,15 +1,13 @@
-Next time:
-- sistema la questione resources
-- all'avvio fa il toggle per settare tutto (e rimuovi risorsa generica)
-- porta su master la 09 senza vogon e con resources.ok
-
 Rilascio 0.9
-- dallo zip sembra "app icon" ma c'è nel json
+- vogon, helper e resources: rimuovi o usa
+- injector?
+- porta su master la 09
 - Scrivere description per google
 - descrizione "Icons made by Pixel Perfect and Nikita Golubev from www.flaticon.com"
 - https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
 
 Rilascio 0.9.5
+- versioni fr, es, pr, gr
 - montare screenshot
 - readme su github
 - Rivedere icone
@@ -17,7 +15,6 @@ Rilascio 0.9.5
 Rilascio 1.0
 - test: firefox ed edge (test)
 - Shortcut generalmente liberi da tastiera
-- Rimuovi vogon.js da master
 - aggiungi popup con opzioni applicative
 
 Rilasci 1.1 - 1.5
@@ -32,6 +29,7 @@ Rilasci 1.1 - 1.5
 - http://humaan.com/checklist/
 - Numero notifiche persistente (scrivi come per blacklist) (richiede permission "storage")
 - Controlla il chiamante della tab (openerTabId) per disabilitare SEMPRE popup in background
+- sistema la questione resources
 
 Rilasci 2.0 - 2.2
 - controllo al click del target?
