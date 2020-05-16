@@ -5,13 +5,13 @@ class Resources {
                 blacklistAlert: {
                     blacklistedTitle: "Protection is enabled for a blacklisted site",
                     blacklistedMessage: "The website is: ",
-                    blacklistedIcon: "icons/enabled.png",
+                    blacklistedIcon: "icons/on.png",
                 },
                 browserAction: {
                     enabledTitle: "Click to disable protection",
                     disabledTitle: "Click to enable protection",
-                    enabledIcon: "icons/enabled.png",
-                    disabledIcon: "icons/disabled.png",
+                    enabledIcon: "icons/on.png",
+                    disabledIcon: "icons/off.png",
                 }
             },
         };

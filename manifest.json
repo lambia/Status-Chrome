@@ -2,8 +2,9 @@
     "manifest_version": 2,
 
     "name": "T800 Popup Blocker",
+    "short_name": "123456789012",
     "description": "It will stop unwanted popup. Hasta la vista, baby!",
-    "version": "0.9.1.1",
+    "version": "0.9.1.2",
 
     "browser_action": {
         "default_icon": "icons/app.png",
@@ -11,7 +12,7 @@
     },
     "permissions": [
         "tabs",
-        "notifications"
+        "activeTab"
     ],
     "background": {
         "page": "main.html"

@@ -1,27 +1,34 @@
 Rilascio 0.9
-- Nome e Icona (app)
-- Icone stati (on/off)
+- internazionalizzare: https://developer.chrome.com/webstore/i18n
+- dallo zip sembrano mancare "nome breve" e "app icon"
+- dal manifest cambiare: NOME, "hasta"
+- Scrivere description per google
+- readme su github
+- montare screenshot
+- descrizione "Icons made by Pixel Perfect and Nikita Golubev from www.flaticon.com"
 - https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
 
+Rilascio 0.9.5
+- Rivedere icone
+
 Rilascio 1.0
-- test: notifiche (timer/click) su pc di casa
-- test: linux
-- test: arianna
 - test: firefox ed edge (test)
-- Shortcut
+- Shortcut generalmente liberi da tastiera
 - Rimuovi vogon.js da master
-- Aggiungi console.log
-- aggiungi popup con opzioni
+- aggiungi popup con opzioni applicative
 
 Rilasci 1.1 - 1.5
+- check .runtime per js inject (da opzioni puoi scegliere quale modalità usare)
+  https://developer.chrome.com/extensions/content_scripts#
+- runtime-inject aggiungi protezione per documentWrite-link + clickTrigger (controlla se dove hai cliccato è il chiamante dell'apertura)
+- se runtime-inject è sufficientemente affidabile, usalo come predefinito (e rimuovi permissions.tabs)
 - "yarn global add web-ext"
 - prima di toggle, controlla di avere i permessi, altrimenti richiedili
 - https://github.com/mozilla/webextension-polyfill
 - https://developer.chrome.com/webstore/launching#pre-launch-checklist
 - http://humaan.com/checklist/
-- Readme su github
 - Numero notifiche persistente (scrivi come per blacklist) (richiede permission "storage")
-- Controlla il chiamante della tab (openerTabId) per disabilitare popup in background
+- Controlla il chiamante della tab (openerTabId) per disabilitare SEMPRE popup in background
 
 Rilasci 2.0 - 2.2
 - controllo al click del target?
