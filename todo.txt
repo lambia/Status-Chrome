@@ -1,14 +1,17 @@
+Next time:
+- sistema la questione resources
+- all'avvio fa il toggle per settare tutto (e rimuovi risorsa generica)
+- porta su master la 09 senza vogon e con resources.ok
+
 Rilascio 0.9
-- internazionalizzare: https://developer.chrome.com/webstore/i18n
-- dallo zip sembrano mancare "nome breve" e "app icon"
-- dal manifest cambiare: NOME, "hasta"
+- dallo zip sembra "app icon" ma c'è nel json
 - Scrivere description per google
-- readme su github
-- montare screenshot
 - descrizione "Icons made by Pixel Perfect and Nikita Golubev from www.flaticon.com"
 - https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
 
 Rilascio 0.9.5
+- montare screenshot
+- readme su github
 - Rivedere icone
 
 Rilascio 1.0

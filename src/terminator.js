@@ -1,11 +1,23 @@
-import Resources from "../resources/resources.js"
+//import Resources from "../resources/resources.js"
 
 class Terminator {
-    constructor(lang) {
+    constructor() {
         this.isEnabled = false;
         this.killedCounter = 0;
         chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
-        this.res = new Resources(lang);
+
+        this.$t = chrome.i18n.getMessage;
+        //let $r = new Resources();
+        //let $t = $r.translator;
+        //let x = $t("browserIcon.on", true);
+        //let x = $r.translator("browserIcon.on", true);
+
+        //No autoboxing without babel. so what? function classes?
+        //It's time to go to sleep, tomorrow take a decision
+        // let $x = new Resources();
+        // let x = $x("placeholder", true);
+        // alert(x, true);
+
         this.browserProtocols = [
             "chrome://",
             "brave://",
@@ -94,6 +106,7 @@ class Terminator {
     //It now works thanks to the returned mock WindowProxy
     //To use for the new release
     //Need to be called for all the tabs (on toggle) and for any tabs that loads new page
+    //Also check for browserProtocols/itsok
     futureToggle() {
         let self = this;
 
@@ -116,17 +129,18 @@ class Terminator {
     toggle() {
         this.isEnabled = !this.isEnabled;
         let isEnabled = this.isEnabled;
-        let res = this.res;
+        let $t = this.$t;
 
         chrome.browserAction.setIcon({
-            path: isEnabled ? res.browserAction.enabledIcon : res.browserAction.disabledIcon
+            path: isEnabled ? "icons/on.png" : "icons/off.png"
+            //path: isEnabled ? $t("placeholder", true) : $t("placeholder", true)
         });
 
         chrome.browserAction.setTitle({
-            title: isEnabled ? res.browserAction.enabledTitle : res.browserAction.disabledTitle
+            title: isEnabled ? $t("uiEnabledTitle") : $t("uiDisabledTitle")
         });
 
-        //ToDev: prompt "want to add current site to blacklist?"
+        //ToDev: integrate vogon and prompt "want to add current site to blacklist?"
     }
 
     isEnabled() {

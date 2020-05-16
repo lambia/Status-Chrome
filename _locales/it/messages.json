@@ -1,0 +1,29 @@
+{
+    "appName": {
+        "message": "Blocco pop-up",
+        "description": "Application Name"
+    },
+    "appShortName": {
+        "message": "Blocco popup",
+        "description": "Application Name, less than 12 characters"
+    },
+    "appDescription": {
+        "message": "Ecco cosa fare per bloccare pop-up, finestre e pubblicità se si ama guardare film in streaming",
+        "description": "That's more a clickbait title rather than a real description"
+    },
+    "appActionToggle": {
+        "message": "Abilita/Disabilita la protezione dai pop-up"
+    },
+    "appActionDebug": {
+        "message": "Cose da programmatore"
+    },
+    "uiEnabledTitle": {
+        "message": "Clicca per disabilitare la protezione dai pop-up"
+    },
+    "uiDisabledTitle": {
+        "message": "Clicca per abilitare la protezione dai pop-up"
+    },
+    "placeholder": {
+        "message": "__segnaposto__"
+    }
+}

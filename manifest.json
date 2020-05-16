@@ -1,14 +1,16 @@
 {
     "manifest_version": 2,
 
-    "name": "T800 Popup Blocker",
-    "short_name": "123456789012",
-    "description": "It will stop unwanted popup. Hasta la vista, baby!",
-    "version": "0.9.1.2",
+    "name": "__MSG_appName__",
+    "short_name": "__MSG_appShortName__",
+    "description": "__MSG_appDescription__",
+    "version": "0.9.1.3",
+    "version_name": "i18n",
+    "default_locale": "en",
 
     "browser_action": {
         "default_icon": "icons/app.png",
-        "default_title": "Click to toggle popup protection"
+        "default_title": "__MSG_appActionToggle__"
     },
     "permissions": [
         "tabs",
@@ -22,25 +24,13 @@
             "suggested_key": {
                 "default": "Ctrl+Shift+1"
             },
-            "description": "Toggle the popup protection"
-        },
-        "add": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+2"
-            },
-            "description": "Add current website to blacklist"
-        },
-        "clean": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+3"
-            },
-            "description": "Clean blacklist"
+            "description": "__MSG_appActionToggle__"
         },
         "debug": {
             "suggested_key": {
-                "default": "Ctrl+Shift+4"
+                "default": "Ctrl+Shift+2"
             },
-            "description": "Dev Stuff"
+            "description": "__MSG_appActionDebug__"
         }
     },
     "icons": {

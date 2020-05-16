@@ -1,8 +1,5 @@
-/* Variabili d'appoggio e configurazione */
-var lang = "en";
-
 import terminator from "./terminator.js"
-var t800 = new terminator(lang);
+var t800 = new terminator();
 //t800.toggle();
 
 

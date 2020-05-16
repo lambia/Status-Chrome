@@ -1,5 +1,5 @@
-import Resources from "../resources/resources.js"
-
+//import Resources from "../resources/resources.js"
+//Resources non esiste più, usare chrome.i18n
 class Vogon {
     constructor(lang) {
         this.res = new Resources(lang);

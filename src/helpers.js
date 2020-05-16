@@ -1,7 +1,7 @@
 
 class Helpers {
 
-    printData(data, ontop = true) {
+    echo(data, ontop = true) {
         if (ontop) {
             alert(JSON.stringify(data, null, 4));
         }
