@@ -1,17 +1,8 @@
 class Terminator {
-    constructor() {
-        this.isEnabled = false;
-        this.killedCounter = 0;
+    constructor(app) {
         chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
 
-        this.$t = chrome.i18n.getMessage;
-
-        this.browserProtocols = [
-            "chrome://",
-            "brave://",
-            "about:" //about:info, about:config
-        ];
-
+        this.app = app;
         this.setListeners();
     }
 
@@ -19,34 +10,10 @@ class Terminator {
     setListeners() {
         let self = this;
 
-        //On browserAction click
-        chrome.browserAction.onClicked.addListener(function () {
-            self.toggle();
-            //self.futureToggle();
-        });
-
-        //On keyboard shortcut
-        chrome.commands.onCommand.addListener(function (command) {
-            if (command === "toggle") {
-                self.toggle();
-            }
-        });
-
-        //On browser closing (otherwise user could not open again the browser)
-        chrome.windows.onRemoved.addListener(function (windowid) {
-            chrome.windows.getAll(
-                { populate: true },
-                function (windowList) {
-                    if (windowList < 1 && self.isEnabled) {
-                        self.toggle(); //ToDev: no popup, no blocco avvio, ma stato persistente
-                    }
-                });
-        });
-
         //On new opened tab
         chrome.tabs.onCreated.addListener(function (tab) {
             //Se la protezione è attiva e l'oggetto non è vuoto
-            if (self.isEnabled && tab) {
+            if (self.app.isEnabled && tab) {
                 self.terminate(tab);
             }
         });
@@ -66,7 +33,7 @@ class Terminator {
 
         //Controlla se l'url è tra i protocolli consentiti
         if (urlType) {
-            self.browserProtocols.forEach(function (value, index, array) {
+            self.app.browserProtocols.forEach(function (value, index, array) {
                 if (tab[urlType].indexOf(value) == 0) {
                     itsok = true;
                 }
@@ -80,14 +47,6 @@ class Terminator {
             self.increaseBadge();
         }
 
-    }
-
-    increaseBadge() {
-        this.killedCounter++;
-        let badgeText = this.killedCounter.toString();
-        if (this.killedCounter > 9999) { badgeText = "999+"; }
-
-        chrome.browserAction.setBadgeText({ text: badgeText });
     }
 
     //Inject javascript to override window.open and prevent any new window
@@ -111,36 +70,6 @@ class Terminator {
                     console.log("Open Prevention Code injected.");
                     `
         })
-    }
-
-    enable() {
-        this.isEnabled = true;
-
-        chrome.browserAction.setIcon({
-            path: "icons/on.png"
-        });
-
-        chrome.browserAction.setTitle({
-            title: this.$t("uiEnabledTitle")
-        });
-    }
-
-    disable() {
-        this.isEnabled = false;
-
-        chrome.browserAction.setIcon({
-            path: "icons/off.png"
-        });
-
-        chrome.browserAction.setTitle({
-            title: this.$t("uiDisabledTitle")
-        });
-    }
-
-    //Activate/deactivate the protection
-    toggle() {
-        //ToDev: integrate vogon and prompt "want to add current site to blacklist?
-        this.isEnabled ? this.disable() : this.enable();
     }
 
 }
