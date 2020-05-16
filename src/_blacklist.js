@@ -12,7 +12,7 @@ class Blacklist {
             "vcrypt.net",
             "streaming",
             "guardaserie",
-            "google.it" //per debug
+            "google.it" //for test and debug purposes
         ];
 
         //getArray();

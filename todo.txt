@@ -1,7 +1,5 @@
 Rilascio 0.9
-- vogon, helper: rimuovi o usa
-- injector?
-- porta su master la 09
+- porta su master senza blacklist, helper e injector
 - Scrivere description per google
 - descrizione "Icons made by Pixel Perfect and Nikita Golubev from www.flaticon.com"
 - https://chrome.google.com/webstore/developer/update?hl=it&publisherId=g17923928675162528696
@@ -13,6 +11,7 @@ Rilascio 0.9.5
 - Rivedere icone
 
 Rilascio 1.0
+- injector
 - test: firefox ed edge (test)
 - Shortcut generalmente liberi da tastiera
 - aggiungi popup con opzioni applicative

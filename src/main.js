@@ -5,5 +5,5 @@ var globals = service.globals();
 import Terminator from "./terminator.js"
 var terminator = new Terminator(globals);
 
-import Injector from "./injector.js"
-var injector = new Injector(globals);
+// import Injector from "./injector.js"
+// var injector = new Injector(globals);

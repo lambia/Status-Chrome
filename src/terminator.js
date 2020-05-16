@@ -1,7 +1,5 @@
 class Terminator {
     constructor(app) {
-        chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
-
         this.app = app;
         this.setListeners();
     }
