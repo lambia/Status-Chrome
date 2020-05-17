@@ -8,7 +8,7 @@
         "description": "Application Name, less than 12 characters"
     },
     "appDescription": {
-        "message": "Ecco cosa fare per bloccare pop-up, finestre e pubblicità se si ama guardare film in streaming",
+        "message": "Ecco cosa fare per bloccare pop-up, finestre e pubblicità se si ama guardare film in streaming. Funzionante.",
         "description": "That's more a clickbait title rather than a real description"
     },
     "appActionToggle": {

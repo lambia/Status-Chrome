@@ -1,6 +1,6 @@
 {
     "appName": {
-        "message": "Real Popup Blocker",
+        "message": "Popup Blocker",
         "description": "Application Name"
     },
     "appShortName": {
@@ -8,7 +8,7 @@
         "description": "Application Name =< 12 characters (this is 13 but is ok)"
     },
     "appDescription": {
-        "message": "How to stop pop-ups, windows, tabs and ads while watching movie on streaming platforms",
+        "message": "How to stop pop-ups, windows, tabs and ads while watching movie on streaming platforms. And it works.",
         "description": "That's more a clickbait title rather than a real description"
     },
     "appActionToggle": {
