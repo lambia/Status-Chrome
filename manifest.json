@@ -5,7 +5,7 @@
     "short_name": "__MSG_appShortName__",
     "description": "__MSG_appDescription__",
     "version": "0.9.1.7",
-    "version_name": "i18n",
+    "version_name": "RC1",
     "default_locale": "en",
 
     "browser_action": {
