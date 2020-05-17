@@ -3,7 +3,8 @@
 *.old
 *.dev.*
 *.dev
-to.do
+*.do
+changelog
 
 # Windows image file caches
 Thumbs.db
