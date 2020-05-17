@@ -4,6 +4,7 @@
 *.dev.*
 *.dev
 *.do
+changelog
 
 # Windows image file caches
 Thumbs.db
