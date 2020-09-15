@@ -4,7 +4,7 @@
     "name": "__MSG_appName__",
     "short_name": "__MSG_appShortName__",
     "description": "__MSG_appDescription__",
-    "version": "0.9.1.8",
+    "version": "0.9.1.9",
     "version_name": "2020 RC2",
     "default_locale": "it",
 
@@ -13,8 +13,7 @@
         "default_title": "__MSG_appActionToggle__"
     },
     "permissions": [
-        "tabs",
-        "activeTab"
+        "tabs"
     ],
     "background": {
         "page": "main.html"
