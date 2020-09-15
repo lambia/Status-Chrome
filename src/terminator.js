@@ -1,6 +1,11 @@
+import Service from "./service.js"
+
 class Terminator {
-    constructor(app) {
-        this.app = app;
+    constructor() {
+        this.srv = new Service();
+        this.app = this.srv.globals();
+        console.log(this.srv.app);
+
         this.setListeners();
     }
 
@@ -42,7 +47,7 @@ class Terminator {
         if (!itsok) {
             //Chiudi l'oggetto
             chrome.tabs.remove(tab.id);
-            self.increaseBadge();
+            self.srv.increaseBadge();
         }
 
     }

@@ -5,6 +5,7 @@
 *.dev
 *.do
 changelog
+psd/
 
 # Windows image file caches
 Thumbs.db

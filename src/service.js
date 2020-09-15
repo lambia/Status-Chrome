@@ -12,7 +12,7 @@ class Service {
             ]
         };
 
-        chrome.browserAction.setBadgeBackgroundColor({ color: [64, 64, 255, 255] });
+        chrome.browserAction.setBadgeBackgroundColor({ color: [90, 90, 90, 255] });
 
         this.setListeners();
         this.disable();
