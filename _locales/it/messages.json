@@ -1,14 +1,14 @@
 {
     "appName": {
-        "message": "Blocco pop-up funzionante",
+        "message": "Blocco Popup 2020 - Funzionante!",
         "description": "Application Name"
     },
     "appShortName": {
-        "message": "Blocco popup",
-        "description": "Application Name, less than 12 characters"
+        "message": "Blocco Popup",
+        "description": "Application Name =< 12 characters"
     },
     "appDescription": {
-        "message": "Ecco come bloccare pop-up, finestre e pubblicità se si ama guardare film in streaming. Metodo funzionante.",
+        "message": "Ecco come bloccare popup, finestre e pubblicità se si ama guardare film in streaming.",
         "description": "That's more a clickbait title rather than a real description"
     },
     "appActionToggle": {
