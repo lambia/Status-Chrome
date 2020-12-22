@@ -5,11 +5,13 @@ class Service {
         this.app = {
             isEnabled: false,
             killedCounter: 0,
-            // browserProtocols: [
-            //     "chrome://",
-            //     "brave://",
-            //     "about:" //about:info, about:config
-            // ]
+            browserProtocols: [
+                "chrome://",
+                "chrome-extension://",
+                "edge://",
+                "brave://",
+                "about:"
+            ]
         };
 
         chrome.browserAction.setBadgeBackgroundColor({ color: [90, 90, 90, 255] });

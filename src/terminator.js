@@ -4,6 +4,8 @@ class Terminator {
     constructor() {
         this.srv = new Service();
         this.app = this.srv.globals();
+        this.history = this.createFIFO(10);
+        this.FOCUS_ON_ALLOWED = true;
 
         this.setListeners();
     }
@@ -19,6 +21,86 @@ class Terminator {
                 self.terminate(tab);
             }
         });
+        
+        //Message from extension's popup
+        chrome.runtime.onMessage.addListener(
+            function(request, sender, sendResponse) {
+                if (request.event === "load") {
+                    self.sendContent();
+                    self.sendStatus( self.app.isEnabled ); //ToDo: move popup stuff to service?
+                } else if (request.event === "toggle") {
+                    self.srv.toggle();
+                    self.sendStatus( self.app.isEnabled ); //ToDo: move popup stuff to service?
+                } else if (request.event === "open") {
+                    self.openUrl( request.url );
+                }
+                //   else if (request.event === "allow") {
+                //     console.log("Richiesta: ", request.data);
+                // } else if (request.event === "deny") {
+                //     console.log("Richiesta: ", request.data);
+                // } else if (request.event === "blacklist") {
+                //     console.log("Richiesta: ", request.data);
+                // } else if (request.event === "whitelist") {
+                //     console.log("Richiesta: ", request.data);
+                // }
+            }
+        );
+
+    }
+
+    sendContent() {
+        let self = this;
+
+        chrome.runtime.sendMessage({
+            event: "refresh", 
+            data: self.history
+        });
+    }
+
+    openUrl(url) {
+        let self = this;
+
+        self.allowing = url;
+        chrome.tabs.create({ url, active: self.FOCUS_ON_ALLOWED });
+    }
+
+    sendStatus(status) {
+        let self = this;
+
+        chrome.runtime.sendMessage({
+            event: "status", 
+            data: status
+        });
+    }
+
+    getHostname(url) {
+        return new URL(url).hostname;
+    }
+
+    createFIFO(length) {
+        //ToDo: unique values
+        let array = new Array();
+    
+        array.push = function () {
+            if (this.length >= length) {
+                this.shift();
+            }
+            return Array.prototype.push.apply(this,arguments);
+        }
+    
+        return array;
+    }
+
+    pushToHistory(url) {
+        let self = this;
+
+        //ToDo: aggiungere tab origine e titolo
+        //ToDo: aggiungere time o usare maxLength?
+        //ToDo: spostare getHostname nella buildUI
+        this.history.push({
+            url,
+            title: self.getHostname(url)
+        });
     }
 
     terminate(tab) {
@@ -33,8 +115,10 @@ class Terminator {
             urlType = "url";
         }
 
-        //Controlla se l'url è tra i protocolli consentiti
+        //Se la nuova tab ha un url (toDo: abilitare gli url fissi, eg. bookmark)
         if (urlType) {
+
+            //Confronta url con protocolli consentiti
             self.app.browserProtocols.forEach(function (value, index, array) {
                 if (tab[urlType].indexOf(value) == 0) {
                     itsok = true;
@@ -42,11 +126,16 @@ class Terminator {
             });
         }
 
-        //Se ha un url non ok, o se non ha url
-        if (!itsok) {
-            //Chiudi l'oggetto
+        //Se url non ok o vuoto, e se non si tratta di un url appena consentito
+        if (!itsok && tab[urlType]!=self.allowing) {
+
+            //Chiudi l'oggetto e aggiorna la UI
             chrome.tabs.remove(tab.id);
             self.srv.increaseBadge();
+            
+            //ToDo: tab origine (attiva? non c'è caller?) e titolo (non noto)
+            self.pushToHistory(tab[urlType]);
+            self.sendContent();
         }
 
     }

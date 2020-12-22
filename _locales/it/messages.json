@@ -7,6 +7,10 @@
         "message": "Blocco Popup",
         "description": "Application Name =< 12 characters"
     },
+    "appVersion": {
+        "message": "2020 DEV4",
+        "description": "Application Version showed in GUI"
+    },
     "appDescription": {
         "message": "Ecco come bloccare popup, finestre e pubblicità se si ama guardare film in streaming.",
         "description": "That's more a clickbait title rather than a real description"
@@ -14,14 +18,17 @@
     "appActionToggle": {
         "message": "Abilita/Disabilita la protezione dai pop-up"
     },
-    "appActionDebug": {
-        "message": "Cose da programmatore"
+    "appNoRecords": {
+        "message": "Nulla da visualizzare"
     },
     "uiEnabledTitle": {
-        "message": "Clicca per disabilitare la protezione dai pop-up"
+        "message": "Protezione popup attiva. \r\nClicca per disabilitare."
     },
     "uiDisabledTitle": {
-        "message": "Clicca per abilitare la protezione dai pop-up"
+        "message": "Protezione popup disattiva. \r\nClicca per abilitare."
+    },
+    "appActionDebug": {
+        "message": "Cose da programmatore"
     },
     "placeholder": {
         "message": "__segnaposto__"

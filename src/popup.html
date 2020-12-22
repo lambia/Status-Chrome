@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <head>
+        <title data-locale="appShortName">appShortName</title>
+        <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+            padding: 0px;
+            background: white;
+        }
+        div:first-child {
+            margin-top: 0px;
+        }
+        .container {
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 1em;
+            width: 200px;
+            margin-top: 1px;
+            background: #cccccc;
+        }
+        .historyRecord {
+            display: block; /* ToDev 134 */
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 4px;
+        }
+        .historyRecord:hover {
+            background: #aaaaaa;
+        }
+        a {            
+            cursor: pointer;
+        }
+        .title {
+            padding: 0.75em;
+        }
+        .title div {
+            font-size: 1.5em !important;
+            font-weight: 700;
+        }
+        .title div.mini {
+            font-size: 0.8em !important;
+            font-weight: 600;
+            margin-top: -0.25em;
+        }
+        </style>
+        <script src="popup.js"></script>
+    </head>
+    <body>
+        <div id="header" class="container">
+            <div class="title">
+                <div data-locale="appShortName">appShortName</div>
+                <div data-locale="appVersion" class="mini">appVersion</div>
+            </div>
+            <a id="btnToggle"></a>
+            <br><br/>
+        </div>
+        <div id="history" class="container"></div>
+    </body>
+</html>

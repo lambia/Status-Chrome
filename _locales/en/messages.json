@@ -7,6 +7,10 @@
         "message": "Popup Blocker",
         "description": "Application Name =< 12 characters (this is 13 but is ok)"
     },
+    "appVersion": {
+        "message": "2020 DEV4",
+        "description": "Application Version showed in GUI"
+    },
     "appDescription": {
         "message": "How to stop popups, windows and ads while watching movies on streaming platforms.",
         "description": "That's more a clickbait title rather than a real description"
@@ -14,14 +18,17 @@
     "appActionToggle": {
         "message": "Toggle popup protection"
     },
-    "appActionDebug": {
-        "message": "Dev Stuff"
+    "appNoRecords": {
+        "message": "Nothing yet"
     },
     "uiEnabledTitle": {
-        "message": "Click to disable protection"
+        "message": "Popup protection enabled. \r\nClick to disable."
     },
     "uiDisabledTitle": {
-        "message": "Click to enable protection"
+        "message": "Popup protection disabled. \r\nClick to enable."
+    },
+    "appActionDebug": {
+        "message": "Dev Stuff"
     },
     "placeholder": {
         "message": "__placeholder__"
