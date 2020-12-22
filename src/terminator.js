@@ -4,7 +4,6 @@ class Terminator {
     constructor() {
         this.srv = new Service();
         this.app = this.srv.globals();
-        console.log(this.srv.app);
 
         this.setListeners();
     }
@@ -55,7 +54,7 @@ class Terminator {
     //Inject javascript to override window.open and prevent any new window
     //It now works thanks to the returned mock WindowProxy
     //To use for the new release
-    //Need to be called for all the tabs (on toggle) and for any tabs that loads new page
+    //Need to be called for all the tabs (on toggle) and for any tabs that loads a new page
     //Also check for browserProtocols/itsok
     futureToggle() {
         let self = this;

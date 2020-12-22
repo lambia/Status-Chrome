@@ -5,11 +5,11 @@ class Service {
         this.app = {
             isEnabled: false,
             killedCounter: 0,
-            browserProtocols: [
-                "chrome://",
-                "brave://",
-                "about:" //about:info, about:config
-            ]
+            // browserProtocols: [
+            //     "chrome://",
+            //     "brave://",
+            //     "about:" //about:info, about:config
+            // ]
         };
 
         chrome.browserAction.setBadgeBackgroundColor({ color: [90, 90, 90, 255] });
@@ -85,11 +85,11 @@ class Service {
     increaseBadge() {
         this.app.killedCounter++;
         let badgeText = this.app.killedCounter.toString();
-        if (this.app.killedCounter > 9999) { badgeText = "999+"; }
+        if (this.app.killedCounter > 999) { badgeText = "999+"; }
 
         chrome.browserAction.setBadgeText({ text: badgeText });
     }
-
+    
 }
 
 export default Service;
