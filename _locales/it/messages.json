@@ -8,7 +8,7 @@
         "description": "Application Name =< 12 characters"
     },
     "appVersion": {
-        "message": "2020 DEV4",
+        "message": "2020 RC4",
         "description": "Application Version showed in GUI"
     },
     "appDescription": {
@@ -18,14 +18,11 @@
     "appActionToggle": {
         "message": "Abilita/Disabilita la protezione dai pop-up"
     },
-    "appNoRecords": {
-        "message": "Nulla da visualizzare"
-    },
     "uiEnabledTitle": {
-        "message": "Protezione popup attiva. \r\nClicca per disabilitare."
+        "message": "Protezione attiva. \r\nClicca per disabilitare."
     },
     "uiDisabledTitle": {
-        "message": "Protezione popup disattiva. \r\nClicca per abilitare."
+        "message": "Protezione disattiva. \r\nClicca per abilitare."
     },
     "appActionDebug": {
         "message": "Cose da programmatore"

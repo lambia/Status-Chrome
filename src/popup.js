@@ -2,6 +2,13 @@
 
 document.addEventListener('DOMContentLoaded', domLoaded);
 
+this.res = { //ToDo: use resource service (and prepend "../")
+  browserIcon: {
+      on: "../icons/on.png",
+      off: "../icons/off.png",
+  }
+};
+
 function domLoaded() {
   let self = this;
 
@@ -14,7 +21,7 @@ function domLoaded() {
   });
 
   /* EVENT HANDLERS **********************/
-  document.getElementById("btnToggle").addEventListener('click', emitToggleStatus);
+  document.getElementById("toggleWrapper").addEventListener('click', emitToggleStatus);
   chrome.runtime.onMessage.addListener(eventBus);
 
 }
@@ -28,15 +35,22 @@ function eventBus(request, sender, sendResponse) {
 }
 
 function emitToggleStatus() {
+  
   chrome.runtime.sendMessage({
     event: "toggle"
   });
-  // window.close();
+
+  setTimeout(function(){
+    window.close();
+  }, 350);
 }
 
 function renderStatus(status) {
     document.getElementById("btnToggle").innerText = (status===true) ?
-      chrome.i18n.getMessage("uiEnabledTitle") : chrome.i18n.getMessage("uiDisabledTitle") ;
+      chrome.i18n.getMessage("uiEnabledTitle") : chrome.i18n.getMessage("uiDisabledTitle");
+
+    document.getElementById("btnToggleIcon").src = (status===true) ?
+      res.browserIcon.on : res.browserIcon.off;
 }
 
 //Build the DOM from some data
@@ -47,13 +61,11 @@ function renderRecords(data) {
 
   if(data && data.length) {
     for(let i=0; i<data.length; i++) {
-      // historyDom += "<div>"; /* ToDev 134 */
+      // historyDom += "<div>"; /* ToDo 9 */
       historyDom += "<a class='historyRecord' data-href='" + data[i].url + "' target='_blank'>" + data[i].title + "</a>";
-      // historyDom += "<br/>"; /* ToDev 134 */
-      // historyDom += "</div>"; /* ToDev 134 */
+      // historyDom += "<br/>"; /* ToDo 9 */
+      // historyDom += "</div>"; /* ToDo 9 */
     }
-  } else {
-    historyDom = "<div>" + chrome.i18n.getMessage("appNoRecords") + "</div>";
   }
 
   document.getElementById("history").innerHTML = historyDom;

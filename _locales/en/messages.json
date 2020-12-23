@@ -8,7 +8,7 @@
         "description": "Application Name =< 12 characters (this is 13 but is ok)"
     },
     "appVersion": {
-        "message": "2020 DEV4",
+        "message": "2020 RC4",
         "description": "Application Version showed in GUI"
     },
     "appDescription": {
@@ -18,14 +18,11 @@
     "appActionToggle": {
         "message": "Toggle popup protection"
     },
-    "appNoRecords": {
-        "message": "Nothing yet"
-    },
     "uiEnabledTitle": {
-        "message": "Popup protection enabled. \r\nClick to disable."
+        "message": "Protection enabled. \r\nClick to disable."
     },
     "uiDisabledTitle": {
-        "message": "Popup protection disabled. \r\nClick to enable."
+        "message": "Protection disabled. \r\nClick to enable."
     },
     "appActionDebug": {
         "message": "Dev Stuff"

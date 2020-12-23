@@ -74,7 +74,17 @@ class Terminator {
     }
 
     getHostname(url) {
-        return new URL(url).hostname;
+        // Since it's not a frequent operation, I won't add complexity for tests and readability, but... yes,
+        // performance benchmarks revealed that a well written regex (*) would be 50x faster than URL constructor 
+        // (*) keep port: url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+        // (*) only host: url.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i);
+
+        let hostname = "error";
+        if(url && (typeof url) === 'string') {
+            hostname = new URL(url).hostname;
+            hostname = (hostname.indexOf("www.") == 0) ? hostname.slice(4) : hostname;
+        }
+        return hostname;
     }
 
     createFIFO(length) {
@@ -95,7 +105,6 @@ class Terminator {
         let self = this;
 
         //ToDo: aggiungere tab origine e titolo
-        //ToDo: aggiungere time o usare maxLength?
         //ToDo: spostare getHostname nella buildUI
         this.history.push({
             url,
@@ -106,36 +115,39 @@ class Terminator {
     terminate(tab) {
         let self = this;
         let itsok = false;
-        let urlType = null;
+        let url = "";
 
         //Controlla se ha un url
         if (tab.pendingUrl) {
-            urlType = "pendingUrl";
+            url = tab.pendingUrl;
         } else if (tab.url) {
-            urlType = "url";
+            url = tab.url;
         }
 
         //Se la nuova tab ha un url (toDo: abilitare gli url fissi, eg. bookmark)
-        if (urlType) {
+        if (url) {
 
             //Confronta url con protocolli consentiti
             self.app.browserProtocols.forEach(function (value, index, array) {
-                if (tab[urlType].indexOf(value) == 0) {
+                if (url.indexOf(value) == 0) {
                     itsok = true;
                 }
             });
         }
 
         //Se url non ok o vuoto, e se non si tratta di un url appena consentito
-        if (!itsok && tab[urlType]!=self.allowing) {
+        if (!itsok) {
+        // if (!itsok && url!=self.allowing) {
 
             //Chiudi l'oggetto e aggiorna la UI
             chrome.tabs.remove(tab.id);
             self.srv.increaseBadge();
             
-            //ToDo: tab origine (attiva? non c'è caller?) e titolo (non noto)
-            self.pushToHistory(tab[urlType]);
-            self.sendContent();
+            //ToDo: push titolo, update lastInsertTime. Organizzare meglio gli if
+            if(url) {
+                self.pushToHistory(url);
+                self.sendContent(); //ToDo: spostare fuori dall'if se si aggiunge il counter in html
+            }
         }
 
     }
