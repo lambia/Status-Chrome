@@ -28,11 +28,6 @@ class Service {
     setListeners() {
         let self = this;
 
-        //On browserAction click
-        chrome.browserAction.onClicked.addListener(function () {
-            self.toggle();
-        });
-
         //On keyboard shortcut
         chrome.commands.onCommand.addListener(function (command) {
             if (command === "toggle") {
@@ -66,6 +61,11 @@ class Service {
         chrome.browserAction.setTitle({
             title: this.$t("uiEnabledTitle")
         });
+
+        chrome.runtime.sendMessage({
+            event: "popup.in.status", 
+            data: true //this.app.isEnabled
+        });
     }
 
     disable() {
@@ -77,6 +77,11 @@ class Service {
 
         chrome.browserAction.setTitle({
             title: this.$t("uiDisabledTitle")
+        });
+
+        chrome.runtime.sendMessage({
+            event: "popup.in.status", 
+            data: false //this.app.isEnabled
         });
     }
 
@@ -93,6 +98,7 @@ class Service {
 
         chrome.browserAction.setBadgeText({ text: badgeText });
     }
+
     
 }
 

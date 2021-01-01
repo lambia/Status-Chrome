@@ -13,7 +13,7 @@ function domLoaded() {
   let self = this;
 
   /* GET RECORDS AND STATUS **************/
-  chrome.runtime.sendMessage({ event: "load" });
+  chrome.runtime.sendMessage({ event: "popup.out.load" });
 
   /* UI LOCALIZATION *********************/
   document.querySelectorAll('[data-locale]').forEach(elem => {
@@ -27,9 +27,9 @@ function domLoaded() {
 }
 
 function eventBus(request, sender, sendResponse) { 
-  if (request.event === "refresh") { //Refresh UI (get-records)
+  if (request.event === "popup.in.refresh") { //Refresh UI (get-records)
     renderRecords(request.data);
-  } else if (request.event === "status") { //Refresh UI (get-status)
+  } else if (request.event === "popup.in.status") { //Refresh UI (get-status)
     renderStatus(request.data);
   }
 }
@@ -37,7 +37,7 @@ function eventBus(request, sender, sendResponse) {
 function emitToggleStatus() {
   
   chrome.runtime.sendMessage({
-    event: "toggle"
+    event: "popup.out.toggle"
   });
 
   setTimeout(function(){
@@ -62,7 +62,11 @@ function renderRecords(data) {
   if(data && data.length) {
     for(let i=data.length-1; i>=0; i--) {
       // historyDom += "<div>"; /* ToDo 9: spostare record in div per includere favicon e orario */
-      historyDom += "<a class='historyRecord' data-href='" + data[i].url + "' target='_blank'>" + data[i].title + "</a>";
+      if(data[i].url) {
+        historyDom += "<a class='historyRecord' data-href='" + data[i].url + "' target='_blank'>" + data[i].title + "</a>";        
+      } else {
+        historyDom += "<a class='historyRecord'>" + data[i].title + "</a>";
+      }
       // historyDom += "<br/>"; /* ToDo 9 */
       // historyDom += "</div>"; /* ToDo 9 */
     }
@@ -81,6 +85,6 @@ function renderRecords(data) {
 function allowRecord(e) {
   let self = this;
   if(e && e.target && e.target.dataset.href) {
-    chrome.runtime.sendMessage({ event: "open", url: e.target.dataset.href });
+    chrome.runtime.sendMessage({ event: "popup.out.allow", url: e.target.dataset.href });
   }
 }

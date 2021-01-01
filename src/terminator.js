@@ -6,7 +6,7 @@ class Terminator {
         this.app = this.srv.globals();
         this.allowing = null;
         this.history = this.createFIFO(10);
-        this.suspects = this.createFIFO(10); //ToDo: aumentare a 100? 1000?
+        this.suspects = this.createFIFO(100); //ToDo: aumentare?
         this.FOCUS_ON_ALLOWED = true;
 
         this.setListeners();
@@ -20,6 +20,7 @@ class Terminator {
         chrome.tabs.onCreated.addListener(function (tab) {
             //Se la protezione è attiva e l'oggetto non è vuoto
             if (self.app.isEnabled && tab) {
+                //Termina
                 self.terminate(tab);
             }
         });
@@ -28,21 +29,13 @@ class Terminator {
         chrome.tabs.onUpdated.addListener(function (tabId, changedInfo, tab) {
             //Se la protezione è attiva e l'oggetto non è vuoto
             if (self.app.isEnabled && tab) {
-                if(self.suspects.includes(tabId)==true) {
                 //Se la finestra era in watch
-                //Se è cambiato l'url
-                //Termina loggando l'url
+                if(self.suspects.includes(tabId)==true) {
+                    //Se è cambiato l'url
                     if(changedInfo && changedInfo.url) {
+                        //Termina
                         self.terminate(tab);
                     }
-                    /*
-                    else if(tab.url || tab.pendingUrl) {
-                        //ToDo: non dovrebbe mai verificarsi questo else (c'è il watch sul change)
-                        //anzi, si dovrebbe verificare solo con changedInfo = unloaded
-                        //verificare se pendingUrl esiste solo in callback created o anche qui
-                        debugger;
-                    }
-                    */
                 }
             }
         });
@@ -50,51 +43,88 @@ class Terminator {
         //Message from extension's popup
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
-                if (request.event === "load") {
-                    self.sendContent();
-                    self.sendStatus( self.app.isEnabled ); //ToDo: move popup stuff to service?
-                } else if (request.event === "toggle") {
+                //Popup is loading and asks for initial data
+                if (request.event === "popup.out.load") {
+                    self.sendMessage("popup.in.refresh", self.history);
+                    self.sendMessage("popup.in.status", self.app.isEnabled); //ToDo: move popup stuff to service?
+                //Popup triggered a state change
+                } else if (request.event === "popup.out.toggle") {
                     self.srv.toggle();
-                    self.sendStatus( self.app.isEnabled ); //ToDo: move popup stuff to service?
-                } else if (request.event === "open") {
-                    self.openUrl( request.url );
+                //A popup was allowed
+                } else if (request.event === "popup.out.allow") {
+                    self.allowing = request.url;
+                    chrome.tabs.create({ url: request.url, active: self.FOCUS_ON_ALLOWED });
                 }
-                //   else if (request.event === "allow") {
-                //     console.log("Richiesta: ", request.data);
-                // } else if (request.event === "deny") {
-                //     console.log("Richiesta: ", request.data);
-                // } else if (request.event === "blacklist") {
-                //     console.log("Richiesta: ", request.data);
-                // } else if (request.event === "whitelist") {
-                //     console.log("Richiesta: ", request.data);
-                // }
             }
         );
 
     }
 
-    sendContent() {
+    terminate(tab) {
         let self = this;
+        let toBeClosed = true;
+        let url = null;
 
-        chrome.runtime.sendMessage({
-            event: "refresh", 
-            data: self.history
-        });
+        //tab.openerTabId;
+        //ToDo: tienine traccia se valorizzato. cosa ne faccio? confronto opener/opened con blacklist?
+        
+        //Controlla se ha un url
+        if (tab.pendingUrl) {
+            url = tab.pendingUrl;
+        } else if (tab.url) {
+            url = tab.url;
+        }
+
+        //Se la nuova tab ha un url
+        if (url) {
+
+            //Se si tratta di un popup appena consentito
+            if(url==self.allowing) {
+                //ToDo: nella callback dell'open non va bene, ma potrebbe non passare di qui. gli diamo una scadenza?
+                self.allowing = null; 
+                toBeClosed = false;
+            } else {
+                //Confronta url con protocolli consentiti
+                self.app.browserProtocols.forEach(function (value, index, array) {
+                    if (url.indexOf(value) == 0) {
+                        toBeClosed = false;
+                    }
+                });
+            }
+
+        } else {
+            //Aggiungi al watch dei sospetti
+            toBeClosed = false;
+            self.suspects.push(tab.id);
+        }
+
+        //Se url non ok
+        if (toBeClosed) {
+
+            //Chiudi l'oggetto e aggiorna la UI
+            chrome.tabs.remove(tab.id); //ToDo: check se tabId exists
+            self.srv.increaseBadge();
+
+            //ToDo: aggiungere tab origine, titolo, favicon, orario?
+            //ToDo: update lastInsertTime?
+            //ToDo: organizzare meglio gli if
+            //ToDo: spostare getHostname nella buildUI
+            self.history.push({
+                title: self.getHostname(url),
+                url: url
+            });
+
+            //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
+            self.sendMessage("popup.in.refresh", self.history);
+
+        }
+
     }
 
-    openUrl(url) {
-        let self = this;
-
-        self.allowing = url;
-        chrome.tabs.create({ url, active: self.FOCUS_ON_ALLOWED });
-    }
-
-    sendStatus(status) {
-        let self = this;
-
+    sendMessage(eventChannel, eventData) {
         chrome.runtime.sendMessage({
-            event: "status", 
-            data: status
+            event: eventChannel, 
+            data: eventData
         });
     }
 
@@ -113,113 +143,17 @@ class Terminator {
     }
 
     createFIFO(length) {
-        //ToDo: unique values
+        //ToDo: unique values ?
         let array = new Array();
     
         array.push = function () {
             if (this.length >= length) {
                 this.shift();
             }
-            return Array.prototype.push.apply(this,arguments);
+            return Array.prototype.push.apply(this, arguments);
         }
     
         return array;
-    }
-
-    pushToHistory(url) {
-        let self = this;
-
-        //ToDo: aggiungere tab origine e titolo
-        //ToDo: spostare getHostname nella buildUI
-        this.history.push({
-            url,
-            title: self.getHostname(url)
-        });
-    }
-
-    terminate(tab) {
-        let self = this;
-        let itsok = false; //ToDo: rinominare in toBeClosed o similare
-        let url = null;
-
-        //tab.openerTabId;
-        //ToDo: tienine traccia se valorizzato. cosa ne faccio? confronto opener/opened con blacklist?
-        
-        //Controlla se ha un url
-        if (tab.pendingUrl) {
-            url = tab.pendingUrl;
-        } else if (tab.url) {
-            url = tab.url;
-        }
-
-        //Se la nuova tab ha un url
-        //ToDo: permettere l'apertura di bookmark dalla toolbar
-        //ToDo: permettere ctrl+click su link
-        //ToDo: cosa fare con i link target="_blank" ?
-        //ToDo: permettere nuova tab con url dell'homepage
-        if (url) {
-
-            if(url==self.allowing) {
-                //Se si tratta di un popup appena consentito
-                //ToDo: nella callback dell'open non va bene, ma potrebbe non passare di qui. gli diamo una scadenza.
-                self.allowing = null; 
-                itsok = true;
-            } else {
-                //Confronta url con protocolli consentiti
-                self.app.browserProtocols.forEach(function (value, index, array) {
-                    if (url.indexOf(value) == 0) {
-                        itsok = true;
-                    }
-                });
-            }
-
-        } else {
-            //Aggiungi al watch dei sospetti
-            itsok = true;
-            self.suspects.push(tab.id);
-        }
-
-        //Se url non ok
-        if (!itsok) {
-
-            //Chiudi l'oggetto e aggiorna la UI
-            chrome.tabs.remove(tab.id); //ToDo: check se tabId exists
-            self.srv.increaseBadge();
-            
-            //ToDo: push titolo, update lastInsertTime. Organizzare meglio gli if
-            if(url) {
-                self.pushToHistory(url);
-                self.sendContent(); //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
-            } else {
-                //ToDo: se non c'è url itsok=true quindi qui non ci arriva
-                self.pushToHistory("errore: finestra sconosciuta"); //todo: vedi meglio
-                self.sendContent(); //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
-            }
-        }
-
-    }
-
-    //Inject javascript to override window.open and prevent any new window
-    //It now works thanks to the returned mock WindowProxy
-    //To use for the new release
-    //Need to be called for all the tabs (on toggle) and for any tabs that loads a new page
-    //Also check for browserProtocols/itsok
-    futureToggle() {
-        let self = this;
-
-        chrome.tabs.executeScript(null, {
-            code: `
-                    let wopen = window.open;
-                    window.open = function() {
-                        console.log("Prevented a window", arguments);
-                        let ad = wopen.apply(window,arguments);
-                        let fake = Object.create(ad);
-                        ad.close();
-                        return fake;
-                    }
-                    console.log("Open Prevention Code injected.");
-                    `
-        })
     }
 
 }
