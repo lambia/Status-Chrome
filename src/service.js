@@ -10,7 +10,9 @@ class Service {
                 "chrome-extension://",
                 "edge://",
                 "brave://",
-                "about:"
+                "about:",
+                "http://localhost",
+                "https://localhost"
             ]
         };
 
