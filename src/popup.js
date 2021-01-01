@@ -60,8 +60,8 @@ function renderRecords(data) {
   let historyDom = "";
 
   if(data && data.length) {
-    for(let i=0; i<data.length; i++) {
-      // historyDom += "<div>"; /* ToDo 9 */
+    for(let i=data.length-1; i>=0; i--) {
+      // historyDom += "<div>"; /* ToDo 9: spostare record in div per includere favicon e orario */
       historyDom += "<a class='historyRecord' data-href='" + data[i].url + "' target='_blank'>" + data[i].title + "</a>";
       // historyDom += "<br/>"; /* ToDo 9 */
       // historyDom += "</div>"; /* ToDo 9 */

@@ -4,7 +4,9 @@ class Terminator {
     constructor() {
         this.srv = new Service();
         this.app = this.srv.globals();
+        this.allowing = null;
         this.history = this.createFIFO(10);
+        this.suspects = this.createFIFO(10); //ToDo: aumentare a 100? 1000?
         this.FOCUS_ON_ALLOWED = true;
 
         this.setListeners();
@@ -19,6 +21,29 @@ class Terminator {
             //Se la protezione è attiva e l'oggetto non è vuoto
             if (self.app.isEnabled && tab) {
                 self.terminate(tab);
+            }
+        });
+
+        //On updated tab
+        chrome.tabs.onUpdated.addListener(function (tabId, changedInfo, tab) {
+            //Se la protezione è attiva e l'oggetto non è vuoto
+            if (self.app.isEnabled && tab) {
+                if(self.suspects.includes(tabId)==true) {
+                //Se la finestra era in watch
+                //Se è cambiato l'url
+                //Termina loggando l'url
+                    if(changedInfo && changedInfo.url) {
+                        self.terminate(tab);
+                    }
+                    /*
+                    else if(tab.url || tab.pendingUrl) {
+                        //ToDo: non dovrebbe mai verificarsi questo else (c'è il watch sul change)
+                        //anzi, si dovrebbe verificare solo con changedInfo = unloaded
+                        //verificare se pendingUrl esiste solo in callback created o anche qui
+                        debugger;
+                    }
+                    */
+                }
             }
         });
         
@@ -114,9 +139,12 @@ class Terminator {
 
     terminate(tab) {
         let self = this;
-        let itsok = false;
-        let url = "";
+        let itsok = false; //ToDo: rinominare in toBeClosed o similare
+        let url = null;
 
+        //tab.openerTabId;
+        //ToDo: tienine traccia se valorizzato. cosa ne faccio? confronto opener/opened con blacklist?
+        
         //Controlla se ha un url
         if (tab.pendingUrl) {
             url = tab.pendingUrl;
@@ -124,29 +152,48 @@ class Terminator {
             url = tab.url;
         }
 
-        //Se la nuova tab ha un url (toDo: abilitare gli url fissi, eg. bookmark)
+        //Se la nuova tab ha un url
+        //ToDo: permettere l'apertura di bookmark dalla toolbar
+        //ToDo: permettere ctrl+click su link
+        //ToDo: cosa fare con i link target="_blank" ?
+        //ToDo: permettere nuova tab con url dell'homepage
         if (url) {
 
-            //Confronta url con protocolli consentiti
-            self.app.browserProtocols.forEach(function (value, index, array) {
-                if (url.indexOf(value) == 0) {
-                    itsok = true;
-                }
-            });
+            if(url==self.allowing) {
+                //Se si tratta di un popup appena consentito
+                //ToDo: nella callback dell'open non va bene, ma potrebbe non passare di qui. gli diamo una scadenza.
+                self.allowing = null; 
+                itsok = true;
+            } else {
+                //Confronta url con protocolli consentiti
+                self.app.browserProtocols.forEach(function (value, index, array) {
+                    if (url.indexOf(value) == 0) {
+                        itsok = true;
+                    }
+                });
+            }
+
+        } else {
+            //Aggiungi al watch dei sospetti
+            itsok = true;
+            self.suspects.push(tab.id);
         }
 
-        //Se url non ok o vuoto, e se non si tratta di un url appena consentito
+        //Se url non ok
         if (!itsok) {
-        // if (!itsok && url!=self.allowing) {
 
             //Chiudi l'oggetto e aggiorna la UI
-            chrome.tabs.remove(tab.id);
+            chrome.tabs.remove(tab.id); //ToDo: check se tabId exists
             self.srv.increaseBadge();
             
             //ToDo: push titolo, update lastInsertTime. Organizzare meglio gli if
             if(url) {
                 self.pushToHistory(url);
-                self.sendContent(); //ToDo: spostare fuori dall'if se si aggiunge il counter in html
+                self.sendContent(); //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
+            } else {
+                //ToDo: se non c'è url itsok=true quindi qui non ci arriva
+                self.pushToHistory("errore: finestra sconosciuta"); //todo: vedi meglio
+                self.sendContent(); //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
             }
         }
 
