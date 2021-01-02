@@ -2,8 +2,9 @@ import Resources from "./resources.js"
 
 class Service {
     constructor() {
+        let self = this;
         this.app = {
-            isEnabled: false,
+            isEnabled: null,
             killedCounter: 0,
             browserProtocols: [
                 "chrome://",
@@ -18,30 +19,61 @@ class Service {
 
         chrome.browserAction.setBadgeBackgroundColor({ color: [90, 90, 90, 255] });
 
-        this.setListeners();
-        this.disable();
+        chrome.storage.sync.get("isEnabled", function(result) {
+
+            //ToDo: funziona, ma rifare il giro
+            if(result.isEnabled && result.isEnabled==true) {
+                self.app.isEnabled = true;
+                self.renderStatus(true);
+                self.setListeners();
+            } else {
+                self.setStatus(false);
+                self.app.isEnabled = false;
+                self.renderStatus(false);   //ToDo: andrebbe in callback di setStatus
+                self.setListeners();   //ToDo: andrebbe in callback di setStatus
+            }
+            
+        });
+
     }
 
     $t = (what, override) => new Resources().translator(what, override);
 
+    setStatus(value) {
+        chrome.storage.sync.set({ 'isEnabled': value }, function() {});
+    }
+
     /* Chrome listeners */
     setListeners() {
         let self = this;
+        
+        //On storage change
+        chrome.storage.onChanged.addListener(function(changes, namespace) {
+            //ToDo: filtrare prima per i namespace che ci interessano
+            for (var key in changes) {
+                var storageChange = changes[key];
+                if(key=="isEnabled") {
+                    self.app.isEnabled = storageChange.newValue;
+                    self.renderStatus(storageChange.newValue);
+                }
+            }
+        });
 
         //On keyboard shortcut
         chrome.commands.onCommand.addListener(function (command) {
             if (command === "toggle") {
-                self.toggle();
+                self.setStatus( !self.app.isEnabled );
             }
         });
 
         //On browser closing (otherwise user could not open again the browser)
+        //ToDo: ora che c'è lo storage il delay lo rende inutile, testare (usando local invece di sync)
         chrome.windows.onRemoved.addListener(function (windowid) {
             chrome.windows.getAll(
                 { populate: true },
                 function (windowList) {
                     if (windowList < 1 && self.app.isEnabled) {
-                        self.toggle(); //ToDev: no popup, no blocco avvio, ma stato persistente
+                        self.app.isEnabled = false;
                     }
                 });
         });
@@ -51,44 +83,15 @@ class Service {
         return this.app;
     }
 
-    enable() {
-        this.app.isEnabled = true;
+    renderStatus(value) {
 
         chrome.browserAction.setIcon({
-            path: this.$t("browserIcon.on", true)
+            path: value ? this.$t("browserIcon.on", true) : this.$t("browserIcon.off", true)
         });
 
         chrome.browserAction.setTitle({
-            title: this.$t("uiEnabledTitle")
+            title: value ? this.$t("uiEnabledTitle") : this.$t("uiDisabledTitle")
         });
-
-        chrome.runtime.sendMessage({
-            event: "popup.in.status", 
-            data: true //this.app.isEnabled
-        });
-    }
-
-    disable() {
-        this.app.isEnabled = false;
-
-        chrome.browserAction.setIcon({
-            path: this.$t("browserIcon.off", true)
-        });
-
-        chrome.browserAction.setTitle({
-            title: this.$t("uiDisabledTitle")
-        });
-
-        chrome.runtime.sendMessage({
-            event: "popup.in.status", 
-            data: false //this.app.isEnabled
-        });
-    }
-
-    //Activate/deactivate the protection
-    toggle() {
-        //ToDev: integrate vogon and prompt "want to add current site to blacklist?
-        this.app.isEnabled ? this.disable() : this.enable();
     }
 
     increaseBadge() {

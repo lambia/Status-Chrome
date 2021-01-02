@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', domLoaded);
 
+this.isEnabled = null;
 this.res = { //ToDo: use resource service (and prepend "../")
   browserIcon: {
       on: "../icons/on.png",
@@ -14,6 +15,10 @@ function domLoaded() {
 
   /* GET RECORDS AND STATUS **************/
   chrome.runtime.sendMessage({ event: "popup.out.load" });
+  chrome.storage.sync.get("isEnabled", function(result) {
+    isEnabled = result.isEnabled;
+    renderStatus();
+  });
 
   /* UI LOCALIZATION *********************/
   document.querySelectorAll('[data-locale]').forEach(elem => {
@@ -23,33 +28,39 @@ function domLoaded() {
   /* EVENT HANDLERS **********************/
   document.getElementById("toggleWrapper").addEventListener('click', emitToggleStatus);
   chrome.runtime.onMessage.addListener(eventBus);
+  
+  /* WATCH FOR STORAGE CHANGES ***********/
+  chrome.storage.onChanged.addListener(function(changes, namespace) {
+    //ToDo: filtrare prima per i namespace che ci interessano
+    for (var key in changes) {
+      if (key=="isEnabled") {
+        isEnabled = changes[key].newValue;
+        renderStatus();
+      }
+    }
+  });
 
 }
 
 function eventBus(request, sender, sendResponse) { 
   if (request.event === "popup.in.refresh") { //Refresh UI (get-records)
     renderRecords(request.data);
-  } else if (request.event === "popup.in.status") { //Refresh UI (get-status)
-    renderStatus(request.data);
   }
 }
 
 function emitToggleStatus() {
-  
-  chrome.runtime.sendMessage({
-    event: "popup.out.toggle"
+  chrome.storage.sync.set({ 'isEnabled': !isEnabled }, function() {
+    setTimeout(function(){
+      window.close();
+    }, 0); //0 o 350?
   });
-
-  setTimeout(function(){
-    window.close();
-  }, 350);
 }
 
-function renderStatus(status) {
-    document.getElementById("btnToggle").innerText = (status===true) ?
+function renderStatus() {
+    document.getElementById("btnToggle").innerText = (isEnabled===true) ?
       chrome.i18n.getMessage("uiEnabledTitle") : chrome.i18n.getMessage("uiDisabledTitle");
 
-    document.getElementById("btnToggleIcon").src = (status===true) ?
+    document.getElementById("btnToggleIcon").src = (isEnabled===true) ?
       res.browserIcon.on : res.browserIcon.off;
 }
 

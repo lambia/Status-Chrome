@@ -47,9 +47,6 @@ class Terminator {
                 if (request.event === "popup.out.load") {
                     self.sendMessage("popup.in.refresh", self.history);
                     self.sendMessage("popup.in.status", self.app.isEnabled); //ToDo: move popup stuff to service?
-                //Popup triggered a state change
-                } else if (request.event === "popup.out.toggle") {
-                    self.srv.toggle();
                 //A popup was allowed
                 } else if (request.event === "popup.out.allow") {
                     self.allowing = request.url;
