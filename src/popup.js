@@ -1,8 +1,6 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', domLoaded);
-
-this.isEnabled = null;
+this.isEnabled = null; //ToDo: eliminare e passarlo tra le funzioni
 this.res = { //ToDo: use resource service (and prepend "../")
   browserIcon: {
       on: "../icons/on.png",
@@ -10,14 +8,18 @@ this.res = { //ToDo: use resource service (and prepend "../")
   }
 };
 
+document.addEventListener('DOMContentLoaded', domLoaded);
+
 function domLoaded() {
   let self = this;
 
   /* GET RECORDS AND STATUS **************/
-  chrome.runtime.sendMessage({ event: "popup.out.load" });
   chrome.storage.sync.get("isEnabled", function(result) {
     isEnabled = result.isEnabled;
     renderStatus();
+  });
+  chrome.storage.local.get("history", function(result) {
+    renderRecords(result.history);
   });
 
   /* UI LOCALIZATION *********************/
@@ -26,29 +28,23 @@ function domLoaded() {
   });
 
   /* EVENT HANDLERS **********************/
-  document.getElementById("toggleWrapper").addEventListener('click', emitToggleStatus);
-  chrome.runtime.onMessage.addListener(eventBus);
+  document.getElementById("toggleWrapper").addEventListener('click', toggleStatus);
   
   /* WATCH FOR STORAGE CHANGES ***********/
   chrome.storage.onChanged.addListener(function(changes, namespace) {
-    //ToDo: filtrare prima per i namespace che ci interessano
     for (var key in changes) {
-      if (key=="isEnabled") {
+      if (key=="isEnabled" && namespace=="sync") {
         isEnabled = changes[key].newValue;
         renderStatus();
+      } else if(key=="history" && namespace=="local") {
+        renderRecords(changes[key].newValue);
       }
     }
   });
 
 }
 
-function eventBus(request, sender, sendResponse) { 
-  if (request.event === "popup.in.refresh") { //Refresh UI (get-records)
-    renderRecords(request.data);
-  }
-}
-
-function emitToggleStatus() {
+function toggleStatus() {
   chrome.storage.sync.set({ 'isEnabled': !isEnabled }, function() {
     setTimeout(function(){
       window.close();

@@ -5,9 +5,15 @@ class Terminator {
         this.srv = new Service();
         this.app = this.srv.globals();
         this.allowing = null;
-        this.history = this.createFIFO(10);
         this.suspects = this.createFIFO(100); //ToDo: aumentare?
         this.FOCUS_ON_ALLOWED = true;
+
+        chrome.storage.local.get("history", function(result) {
+            //Se non ci sono dati in storage, crea un nuovo array
+            if(!result.history || !result.history.length || !result.history.length>0) {
+                chrome.storage.local.set({ 'history': this.createFIFO(10) }, function() {});
+            }
+        });
 
         this.setListeners();
     }
@@ -44,11 +50,7 @@ class Terminator {
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 //Popup is loading and asks for initial data
-                if (request.event === "popup.out.load") {
-                    self.sendMessage("popup.in.refresh", self.history);
-                    self.sendMessage("popup.in.status", self.app.isEnabled); //ToDo: move popup stuff to service?
-                //A popup was allowed
-                } else if (request.event === "popup.out.allow") {
+                if (request.event === "popup.out.allow") {
                     self.allowing = request.url;
                     chrome.tabs.create({ url: request.url, active: self.FOCUS_ON_ALLOWED });
                 }
@@ -106,23 +108,16 @@ class Terminator {
             //ToDo: update lastInsertTime?
             //ToDo: organizzare meglio gli if
             //ToDo: spostare getHostname nella buildUI
-            self.history.push({
-                title: self.getHostname(url),
-                url: url
+            chrome.storage.local.get("history", function(result) {
+                result.history.push({
+                    title: self.getHostname(url),
+                    url: url
+                });
+                chrome.storage.local.set({ 'history': result.history }, function() {});
             });
-
-            //ToDo: spostare fuori dall'if quando si aggiunge il counter anche in html
-            self.sendMessage("popup.in.refresh", self.history);
 
         }
 
-    }
-
-    sendMessage(eventChannel, eventData) {
-        chrome.runtime.sendMessage({
-            event: eventChannel, 
-            data: eventData
-        });
     }
 
     getHostname(url) {
