@@ -5,7 +5,7 @@ class Service {
         let self = this;
         this.app = {
             isEnabled: null,
-            killedCounter: 0,
+            killedCounter: null,
             browserProtocols: [
                 "chrome://",
                 "chrome-extension://",
@@ -35,6 +35,19 @@ class Service {
             
         });
 
+        chrome.storage.sync.get("killedCounter", function(result) {
+            if(result.killedCounter && result.killedCounter>0) {
+                self.app.killedCounter = result.killedCounter;
+                self.renderBadge(result.killedCounter);
+            } else {
+                chrome.storage.sync.set({"killedCounter": 0}, function(){
+                    self.app.killedCounter = 0;
+                    // self.renderBadge(0);
+                });
+            }
+        });
+
+
     }
 
     $t = (what, override) => new Resources().translator(what, override);
@@ -55,6 +68,9 @@ class Service {
                 if(key=="isEnabled") {
                     self.app.isEnabled = storageChange.newValue;
                     self.renderStatus(storageChange.newValue);
+                } else if(key=="killedCounter") {
+                    self.app.killedCounter = storageChange.newValue;
+                    self.renderBadge(storageChange.newValue);
                 }
             }
         });
@@ -95,7 +111,12 @@ class Service {
     }
 
     increaseBadge() {
-        this.app.killedCounter++;
+        let self = this;
+        chrome.storage.sync.set({"killedCounter": self.app.killedCounter+1}, function(){});
+    }
+
+    renderBadge(value) {
+
         let badgeText = this.app.killedCounter.toString();
         if (this.app.killedCounter > 999) { badgeText = "999+"; }
 
