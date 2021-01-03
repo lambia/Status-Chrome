@@ -92,6 +92,6 @@ function renderRecords(data) {
 function allowRecord(e) {
   let self = this;
   if(e && e.target && e.target.dataset.href) {
-    chrome.runtime.sendMessage({ event: "popup.out.allow", url: e.target.dataset.href });
+    chrome.storage.local.set({"allowing": e.target.dataset.href}, function() {});
   }
 }

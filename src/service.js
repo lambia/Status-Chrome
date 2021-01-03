@@ -62,13 +62,12 @@ class Service {
         
         //On storage change
         chrome.storage.onChanged.addListener(function(changes, namespace) {
-            //ToDo: filtrare prima per i namespace che ci interessano
             for (var key in changes) {
                 var storageChange = changes[key];
-                if(key=="isEnabled") {
+                if(key=="isEnabled" && namespace=="sync") {
                     self.app.isEnabled = storageChange.newValue;
                     self.renderStatus(storageChange.newValue);
-                } else if(key=="killedCounter") {
+                } else if(key=="killedCounter" && namespace=="sync") {
                     self.app.killedCounter = storageChange.newValue;
                     self.renderBadge(storageChange.newValue);
                 }

@@ -45,17 +45,18 @@ class Terminator {
                 }
             }
         });
-        
-        //Message from extension's popup
-        chrome.runtime.onMessage.addListener(
-            function(request, sender, sendResponse) {
-                //Popup is loading and asks for initial data
-                if (request.event === "popup.out.allow") {
-                    self.allowing = request.url;
-                    chrome.tabs.create({ url: request.url, active: self.FOCUS_ON_ALLOWED });
+
+        //On storage change
+        chrome.storage.onChanged.addListener(function(changes, namespace) {
+            for (var key in changes) {
+                if(key=="allowing" && namespace=="local") {
+                    // if(changes[key].newValue) { //ToDo: decommentare quando si usera solo valore da storage
+                        self.allowing = changes[key].newValue;
+                        chrome.tabs.create({ url: changes[key].newValue, active: self.FOCUS_ON_ALLOWED });
+                    // }
                 }
             }
-        );
+        });
 
     }
 
