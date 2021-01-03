@@ -50,10 +50,11 @@ class Terminator {
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             for (var key in changes) {
                 if(key=="allowing" && namespace=="local") {
-                    // if(changes[key].newValue) { //ToDo: decommentare quando si usera solo valore da storage
+                    if(changes[key].newValue) { //ToDo: semplificare il giro
                         self.allowing = changes[key].newValue;
+                        chrome.storage.local.set({ "allowing": null });
                         chrome.tabs.create({ url: changes[key].newValue, active: self.FOCUS_ON_ALLOWED });
-                    // }
+                    }
                 }
             }
         });

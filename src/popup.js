@@ -28,7 +28,9 @@ function domLoaded() {
   });
 
   /* EVENT HANDLERS **********************/
-  document.getElementById("toggleWrapper").addEventListener('click', toggleStatus);
+  document.getElementById("toggleWrapper").addEventListener('click', function(){
+    chrome.storage.sync.set({ 'isEnabled': !isEnabled });
+  });
   
   /* WATCH FOR STORAGE CHANGES ***********/
   chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -36,20 +38,15 @@ function domLoaded() {
       if (key=="isEnabled" && namespace=="sync") {
         isEnabled = changes[key].newValue;
         renderStatus();
+        setTimeout(function(){
+          window.close();
+        }, 0); //0 o 350?
       } else if(key=="history" && namespace=="local") {
         renderRecords(changes[key].newValue);
       }
     }
   });
 
-}
-
-function toggleStatus() {
-  chrome.storage.sync.set({ 'isEnabled': !isEnabled }, function() {
-    setTimeout(function(){
-      window.close();
-    }, 0); //0 o 350?
-  });
 }
 
 function renderStatus() {
@@ -92,6 +89,6 @@ function renderRecords(data) {
 function allowRecord(e) {
   let self = this;
   if(e && e.target && e.target.dataset.href) {
-    chrome.storage.local.set({"allowing": e.target.dataset.href}, function() {});
+    chrome.storage.local.set({"allowing": e.target.dataset.href});
   }
 }
