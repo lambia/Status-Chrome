@@ -111,15 +111,20 @@ class Service {
 
     increaseBadge() {
         let self = this;
+        //ToDo: self.app.killedCounter serve solo ad evitare il get.then.set (decidere cosa fare)
         chrome.storage.sync.set({"killedCounter": self.app.killedCounter+1}, function(){});
     }
 
     renderBadge(value) {
 
-        let badgeText = this.app.killedCounter.toString();
-        if (this.app.killedCounter > 999) { badgeText = "999+"; }
+        if (value && value>0 && value<1000) {
+            chrome.browserAction.setBadgeText({ text: value.toString() });
+        } else if (value > 999) {
+            chrome.browserAction.setBadgeText({ text: "999+" });
+        } else {
+            chrome.browserAction.setBadgeText({ text: "" });
+        }
 
-        chrome.browserAction.setBadgeText({ text: badgeText });
     }
 
     

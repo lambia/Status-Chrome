@@ -71,6 +71,9 @@
             width: 32px;
             display: block;
         }
+        #toolbar {
+            margin-bottom: 8px;
+        }
         </style>
         <script src="popup.js"></script>
     </head>
@@ -88,6 +91,11 @@
                     <a id="btnToggle"></a>
                 </div>
             </div>
+        </div>
+        <div id="toolbar" class="container">
+            <!-- ToDo: localize -->
+            <button id="btnLogClean">Azzera log</button>
+            <button id="btnCounterClean">Azzera conteggio</button>
         </div>
         <div id="history" class="container"></div>
     </body>

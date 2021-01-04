@@ -31,6 +31,13 @@ function domLoaded() {
   document.getElementById("toggleWrapper").addEventListener('click', function(){
     chrome.storage.sync.set({ 'isEnabled': !isEnabled });
   });
+
+  document.getElementById("btnLogClean").addEventListener('click', function(){
+    chrome.storage.local.set({ 'history': [] }); //ToDo FIFO
+  });
+  document.getElementById("btnCounterClean").addEventListener('click', function(){
+    chrome.storage.sync.set({ 'killedCounter': 0 }); //ToDo FIFO
+  });  
   
   /* WATCH FOR STORAGE CHANGES ***********/
   chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -66,11 +73,29 @@ function renderRecords(data) {
   if(data && data.length) {
     for(let i=data.length-1; i>=0; i--) {
       // historyDom += "<div>"; /* ToDo 9: spostare record in div per includere favicon e orario */
-      if(data[i].url) {
-        historyDom += "<a class='historyRecord' data-href='" + data[i].url + "' target='_blank'>" + data[i].title + "</a>";        
-      } else {
-        historyDom += "<a class='historyRecord'>" + data[i].title + "</a>";
+
+      //ToDo: check if .origin esiste. Il title esiste sempre, vero?
+      historyDom += "<a class='historyRecord' ";
+      if(data[i].to.url) {
+        historyDom += "data-href='" + data[i].to.url + "' ";
       }
+      historyDom += "target='_blank'>";
+
+      historyDom += "[" + data[i].to.hostname + "] ";
+      if(data[i].to.title) {
+        //ToDo: evitare titoli provvisori
+        historyDom += data[i].to.title;
+      }
+
+      if(data[i].from) {
+        historyDom += "<br/>[" + data[i].from.hostname + "] ";
+        if(data[i].from.title) {
+          historyDom += "<br/>" + data[i].from.title;
+        }
+      }
+
+      historyDom += "</a>";
+
       // historyDom += "<br/>"; /* ToDo 9 */
       // historyDom += "</div>"; /* ToDo 9 */
     }
