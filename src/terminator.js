@@ -5,14 +5,14 @@ class Terminator {
         this.srv = new Service();
         this.app = this.srv.globals();
         this.allowing = null;
-        this.suspects = this.createFIFO(100); //ToDo: aumentare?
+        this.suspects = [];
         this.FOCUS_ON_ALLOWED = true;
         let self = this;
 
         chrome.storage.local.get("history", function(result) {
-            //Se non ci sono dati in storage, crea un nuovo array
-            if(!result.history || !result.history.length || !result.history.length>0) {
-                chrome.storage.local.set({ 'history': self.createFIFO(10) }, function() {});
+            //Se non ci sono dati in storage, o in caso di problemi, crea un nuovo array
+            if(!result.history || !result.history.length || !result.history.length>0 || !result.history.length<=10) {
+                chrome.storage.local.set({ 'history': [] }, function() {});
             }
         });
 
@@ -150,8 +150,9 @@ class Terminator {
         //Aggiorna la UI
         self.srv.increaseBadge();
         chrome.storage.local.get("history", function(result) {
-            result.history.push(tabInfo);
-            chrome.storage.local.set({ 'history': result.history }, function() {});
+            chrome.storage.local.set({
+                'history': self.fifoPush(result.history, tabInfo, 10)
+            }, function() {});
         });
 
         //ToDo: aggiungere tab origine, titolo, favicon, orario?
@@ -179,16 +180,25 @@ class Terminator {
         let array = new Array();
     
         array.push = function () {
-            if (this.length >= length) {
+            while (this.length >= length) {
                 this.shift();
             }
             return Array.prototype.push.apply(this, arguments);
         }
-        array.test = function () {
-            return true;
-        }
     
         return array;
+    }
+
+    fifoPush(fifoArray, newRecord, maxLenght) {
+        if(fifoArray && fifoArray.length) {
+            while(fifoArray.length >= maxLenght) {
+                fifoArray.shift();
+            }
+        } else {
+            fifoArray = [];
+        }
+        fifoArray.push(newRecord);
+        return fifoArray;
     }
 
 }

@@ -33,10 +33,10 @@ function domLoaded() {
   });
 
   document.getElementById("btnLogClean").addEventListener('click', function(){
-    chrome.storage.local.set({ 'history': [] }); //ToDo FIFO
+    chrome.storage.local.set({ 'history': [] });
   });
   document.getElementById("btnCounterClean").addEventListener('click', function(){
-    chrome.storage.sync.set({ 'killedCounter': 0 }); //ToDo FIFO
+    chrome.storage.sync.set({ 'killedCounter': 0 });
   });  
   
   /* WATCH FOR STORAGE CHANGES ***********/
