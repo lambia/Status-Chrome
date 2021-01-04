@@ -1,6 +1,6 @@
 {
     "appName": {
-        "message": "Blocco Popup 2020 - Funzionante!",
+        "message": "Blocco Popup 2021 - Funzionante!",
         "description": "Application Name"
     },
     "appShortName": {
@@ -8,7 +8,7 @@
         "description": "Application Name =< 12 characters"
     },
     "appVersion": {
-        "message": "2020 RC4",
+        "message": "2021 RC1",
         "description": "Application Version showed in GUI"
     },
     "appDescription": {
