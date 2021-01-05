@@ -16,7 +16,7 @@ function domLoaded() {
   chrome.storage.sync.get("$isEnabled", function(result) {
     renderStatus(result.$isEnabled);
   });
-  chrome.storage.sync.get("$history", function(result) {
+  chrome.storage.local.get("$history", function(result) {
     renderRecords(result.$history);
   });
 
@@ -33,7 +33,7 @@ function domLoaded() {
   });
 
   document.getElementById("btnLogClean").addEventListener('click', function(){
-    chrome.storage.sync.set({ '$history': [] });
+    chrome.storage.local.set({ '$history': [] });
   });
   document.getElementById("btnCounterClean").addEventListener('click', function(){
     chrome.storage.sync.set({ '$killedCounter': 0 });
@@ -47,7 +47,7 @@ function domLoaded() {
         setTimeout(function(){
           window.close();
         }, 0); //0 o 350?
-      } else if(key=="$history" && namespace=="sync") {
+      } else if(key=="$history" && namespace=="local") {
         renderRecords(changes[key].newValue);
       }
     }

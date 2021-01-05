@@ -9,10 +9,10 @@ class Terminator {
         this.FOCUS_ON_ALLOWED = true;
         let self = this;
 
-        chrome.storage.sync.get("$history", function(result) {
+        chrome.storage.local.get("$history", function(result) {
             //Se non ci sono dati in storage, o in caso di problemi, crea un nuovo array
             if(!result.$history || !result.$history.length || result.$history.length<1 || result.$history.length>10) {
-                chrome.storage.sync.set({ '$history': [] }, function() {});
+                chrome.storage.local.set({ '$history': [] }, function() {});
             }
         });
 
@@ -135,8 +135,8 @@ class Terminator {
 
         //Aggiorna la UI
         self.srv.increaseBadge();
-        chrome.storage.sync.get("$history", function(result) {
-            chrome.storage.sync.set({
+        chrome.storage.local.get("$history", function(result) {
+            chrome.storage.local.set({
                 '$history': self.fifoPush(result.$history, tabInfo, 10)
             }, function() {});
         });
