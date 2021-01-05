@@ -13,11 +13,11 @@ function domLoaded() {
   let self = this;
 
   /* GET RECORDS AND STATUS **************/
-  chrome.storage.sync.get("isEnabled", function(result) {
-    renderStatus(result.isEnabled);
+  chrome.storage.sync.get("$isEnabled", function(result) {
+    renderStatus(result.$isEnabled);
   });
-  chrome.storage.local.get("history", function(result) {
-    renderRecords(result.history);
+  chrome.storage.sync.get("$history", function(result) {
+    renderRecords(result.$history);
   });
 
   /* UI LOCALIZATION *********************/
@@ -27,27 +27,27 @@ function domLoaded() {
 
   /* EVENT HANDLERS **********************/
   document.getElementById("toggleWrapper").addEventListener('click', function(){
-    chrome.storage.sync.get("isEnabled", function(result) {
-      chrome.storage.sync.set({ 'isEnabled': !result.isEnabled });
+    chrome.storage.sync.get("$isEnabled", function(result) {
+      chrome.storage.sync.set({ '$isEnabled': !result.$isEnabled });
     });
   });
 
   document.getElementById("btnLogClean").addEventListener('click', function(){
-    chrome.storage.local.set({ 'history': [] });
+    chrome.storage.sync.set({ '$history': [] });
   });
   document.getElementById("btnCounterClean").addEventListener('click', function(){
-    chrome.storage.sync.set({ 'killedCounter': 0 });
+    chrome.storage.sync.set({ '$killedCounter': 0 });
   });  
   
   /* WATCH FOR STORAGE CHANGES ***********/
   chrome.storage.onChanged.addListener(function(changes, namespace) {
     for (var key in changes) {
-      if (key=="isEnabled" && namespace=="sync") {
+      if (key=="$isEnabled" && namespace=="sync") {
         renderStatus(changes[key].newValue);
         setTimeout(function(){
           window.close();
         }, 0); //0 o 350?
-      } else if(key=="history" && namespace=="local") {
+      } else if(key=="$history" && namespace=="sync") {
         renderRecords(changes[key].newValue);
       }
     }
@@ -131,6 +131,6 @@ function renderRecords(data) {
 function allowRecord(e) {
   let self = this;
   if(e && e.target && e.target.dataset.href) {
-    chrome.storage.local.set({"allowing": e.target.dataset.href});
+    chrome.storage.local.set({"$allowing": e.target.dataset.href});
   }
 }

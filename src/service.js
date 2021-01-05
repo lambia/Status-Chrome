@@ -19,10 +19,10 @@ class Service {
 
         chrome.browserAction.setBadgeBackgroundColor({ color: [90, 90, 90, 255] });
 
-        chrome.storage.sync.get("isEnabled", function(result) {
+        chrome.storage.sync.get("$isEnabled", function(result) {
 
             //ToDo: funziona, ma rifare il giro
-            if(result.isEnabled && result.isEnabled==true) {
+            if(result.$isEnabled && result.$isEnabled==true) {
                 self.app.isEnabled = true;
                 self.renderStatus(true);
                 self.setListeners();
@@ -35,12 +35,12 @@ class Service {
             
         });
 
-        chrome.storage.sync.get("killedCounter", function(result) {
-            if(result.killedCounter && result.killedCounter>0) {
-                self.app.killedCounter = result.killedCounter;
-                self.renderBadge(result.killedCounter);
+        chrome.storage.sync.get("$killedCounter", function(result) {
+            if(result.$killedCounter && result.$killedCounter>0) {
+                self.app.killedCounter = result.$killedCounter;
+                self.renderBadge(result.$killedCounter);
             } else {
-                chrome.storage.sync.set({"killedCounter": 0}, function(){
+                chrome.storage.sync.set({"$killedCounter": 0}, function(){
                     self.app.killedCounter = 0;
                     // self.renderBadge(0);
                 });
@@ -53,7 +53,7 @@ class Service {
     $t = (what, override) => new Resources().translator(what, override);
 
     setStatus(value) {
-        chrome.storage.sync.set({ 'isEnabled': value }, function() {});
+        chrome.storage.sync.set({ '$isEnabled': value }, function() {});
     }
 
     /* Chrome listeners */
@@ -64,10 +64,10 @@ class Service {
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             for (var key in changes) {
                 var storageChange = changes[key];
-                if(key=="isEnabled" && namespace=="sync") {
+                if(key=="$isEnabled" && namespace=="sync") {
                     self.app.isEnabled = storageChange.newValue;
                     self.renderStatus(storageChange.newValue);
-                } else if(key=="killedCounter" && namespace=="sync") {
+                } else if(key=="$killedCounter" && namespace=="sync") {
                     self.app.killedCounter = storageChange.newValue;
                     self.renderBadge(storageChange.newValue);
                 }
@@ -112,7 +112,7 @@ class Service {
     increaseBadge() {
         let self = this;
         //ToDo: self.app.killedCounter serve solo ad evitare il get.then.set (decidere cosa fare)
-        chrome.storage.sync.set({"killedCounter": self.app.killedCounter+1}, function(){});
+        chrome.storage.sync.set({"$killedCounter": self.app.killedCounter+1}, function(){});
     }
 
     renderBadge(value) {

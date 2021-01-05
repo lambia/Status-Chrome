@@ -9,10 +9,10 @@ class Terminator {
         this.FOCUS_ON_ALLOWED = true;
         let self = this;
 
-        chrome.storage.local.get("history", function(result) {
+        chrome.storage.sync.get("$history", function(result) {
             //Se non ci sono dati in storage, o in caso di problemi, crea un nuovo array
-            if(!result.history || !result.history.length || !result.history.length>0 || !result.history.length<=10) {
-                chrome.storage.local.set({ 'history': [] }, function() {});
+            if(!result.$history || !result.$history.length || !result.$history.length>0 || !result.$history.length<=10) {
+                chrome.storage.sync.set({ '$history': [] }, function() {});
             }
         });
 
@@ -50,10 +50,10 @@ class Terminator {
         //On storage change
         chrome.storage.onChanged.addListener(function(changes, namespace) {
             for (var key in changes) {
-                if(key=="allowing" && namespace=="local") {
+                if(key=="$allowing" && namespace=="local") {
                     if(changes[key].newValue) { //ToDo: semplificare il giro
                         self.allowing = changes[key].newValue;
-                        chrome.storage.local.set({ "allowing": null });
+                        chrome.storage.local.set({ "$allowing": null });
                         chrome.tabs.create({ url: changes[key].newValue, active: self.FOCUS_ON_ALLOWED });
                     }
                 }
@@ -132,7 +132,7 @@ class Terminator {
                 }
             });
         //Altrimenti ignora e segui il normale flusso di terminazione
-        } else if (toBeClosed) {
+        } else if (!tab.openerTabId && toBeClosed) {
             //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
             self.terminate(tabInfo);
         }
@@ -147,9 +147,9 @@ class Terminator {
 
         //Aggiorna la UI
         self.srv.increaseBadge();
-        chrome.storage.local.get("history", function(result) {
-            chrome.storage.local.set({
-                'history': self.fifoPush(result.history, tabInfo, 10)
+        chrome.storage.sync.get("$history", function(result) {
+            chrome.storage.sync.set({
+                '$history': self.fifoPush(result.$history, tabInfo, 10)
             }, function() {});
         });
 
