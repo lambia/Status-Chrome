@@ -112,7 +112,6 @@ class Terminator {
             }
         };
 
-        //ToDo: inject "getOrigin.js" per recuperare window.origin
         //Se la c'è una tab chiamante
         if(tab.openerTabId) {
             //ToDo: gestire errore
@@ -127,20 +126,19 @@ class Terminator {
                     };
                 }
                 //E procedi col normale flusso di terminazione
-                //ToDo: aggiungere regole di validazione origin/destination
+                //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
                 if(toBeClosed) {
                     self.terminate(tabInfo);
                 }
             });
         //Altrimenti ignora e segui il normale flusso di terminazione
         } else if (toBeClosed) {
-            //ToDo: aggiungere regole di validazione origin/destination
+            //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
             self.terminate(tabInfo);
         }
 
     }
 
-    //needs: tabid, url, origin
     terminate(tabInfo) {
         let self = this;
 
@@ -155,7 +153,8 @@ class Terminator {
             }, function() {});
         });
 
-        //ToDo: aggiungere tab origine, titolo, favicon, orario?
+        //ToDo: inject "getOrigin.js" per recuperare window.origin invece di openerTabId ?
+        //ToDo: aggiungere titolo/favicon e orario?
         //ToDo: update lastInsertTime?
         //ToDo: organizzare meglio gli if
         //ToDo: spostare getHostname nella buildUI
@@ -176,9 +175,8 @@ class Terminator {
     }
 
     createFIFO(length) {
-        //ToDo: unique values ?
         let array = new Array();
-    
+
         array.push = function () {
             while (this.length >= length) {
                 this.shift();

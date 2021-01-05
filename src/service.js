@@ -4,7 +4,7 @@ class Service {
     constructor() {
         let self = this;
         this.app = {
-            isEnabled: null,
+            isEnabled: null, //ToDo: rimuovere
             killedCounter: null,
             browserProtocols: [
                 "chrome://",
@@ -28,7 +28,7 @@ class Service {
                 self.setListeners();
             } else {
                 self.setStatus(false);
-                self.app.isEnabled = false;
+                self.app.isEnabled = false; //ToDo: andrebbe in callback di setStatus
                 self.renderStatus(false);   //ToDo: andrebbe in callback di setStatus
                 self.setListeners();   //ToDo: andrebbe in callback di setStatus
             }

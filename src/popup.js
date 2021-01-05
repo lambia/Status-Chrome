@@ -1,6 +1,5 @@
 'use strict';
 
-this.isEnabled = null; //ToDo: eliminare e passarlo tra le funzioni
 this.res = { //ToDo: use resource service (and prepend "../")
   browserIcon: {
       on: "../icons/on.png",
@@ -15,8 +14,7 @@ function domLoaded() {
 
   /* GET RECORDS AND STATUS **************/
   chrome.storage.sync.get("isEnabled", function(result) {
-    isEnabled = result.isEnabled;
-    renderStatus();
+    renderStatus(result.isEnabled);
   });
   chrome.storage.local.get("history", function(result) {
     renderRecords(result.history);
@@ -29,7 +27,9 @@ function domLoaded() {
 
   /* EVENT HANDLERS **********************/
   document.getElementById("toggleWrapper").addEventListener('click', function(){
-    chrome.storage.sync.set({ 'isEnabled': !isEnabled });
+    chrome.storage.sync.get("isEnabled", function(result) {
+      chrome.storage.sync.set({ 'isEnabled': !result.isEnabled });
+    });
   });
 
   document.getElementById("btnLogClean").addEventListener('click', function(){
@@ -43,8 +43,7 @@ function domLoaded() {
   chrome.storage.onChanged.addListener(function(changes, namespace) {
     for (var key in changes) {
       if (key=="isEnabled" && namespace=="sync") {
-        isEnabled = changes[key].newValue;
-        renderStatus();
+        renderStatus(changes[key].newValue);
         setTimeout(function(){
           window.close();
         }, 0); //0 o 350?
@@ -56,7 +55,7 @@ function domLoaded() {
 
 }
 
-function renderStatus() {
+function renderStatus(isEnabled) {
     document.getElementById("btnToggle").innerText = (isEnabled===true) ?
       chrome.i18n.getMessage("uiEnabledTitle") : chrome.i18n.getMessage("uiDisabledTitle");
 
@@ -74,26 +73,44 @@ function renderRecords(data) {
     for(let i=data.length-1; i>=0; i--) {
       // historyDom += "<div>"; /* ToDo 9: spostare record in div per includere favicon e orario */
 
-      //ToDo: check if .origin esiste. Il title esiste sempre, vero?
+      
       historyDom += "<a class='historyRecord' ";
-      if(data[i].to.url) {
+      if(data[i].to && data[i].to.url) {
         historyDom += "data-href='" + data[i].to.url + "' ";
       }
       historyDom += "target='_blank'>";
 
-      historyDom += "[" + data[i].to.hostname + "] ";
-      if(data[i].to.title) {
-        //ToDo: evitare titoli provvisori
-        historyDom += data[i].to.title;
-      }
-
+      var from = "Sconosciuto"; //ToDo: localizzare
       if(data[i].from) {
-        historyDom += "<br/>[" + data[i].from.hostname + "] ";
-        if(data[i].from.title) {
-          historyDom += "<br/>" + data[i].from.title;
+        if(data[i].from.hostname) {
+          from = "<span";
+          if(data[i].from.title) {
+            from += ' title="' + data[i].from.title + '"';
+          }
+          from += ">" + data[i].from.hostname + "</span>";
+        } else if(data[i].from.title) {
+          //ToDo: distinguere titoli provvisori
+          //Se vista diretta, troncare
+          from = data[i].from.title;
+        }
+      }
+      
+      var to = "Sconosciuto"; //ToDo: localizzare
+      if(data[i].to) {
+        if(data[i].to.hostname) {
+          to = "<span";
+          if(data[i].to.title) {
+            to += ' title="' + data[i].to.title + '"';
+          }
+          to += ">" + data[i].to.hostname + "</span>";
+        } else if(data[i].to.title) {
+          //ToDo: distinguere titoli provvisori
+          //ToDo: se vista diretta, troncare
+          to = data[i].to.title;
         }
       }
 
+      historyDom += from + ((from && to) ? " -> " : "") + to;
       historyDom += "</a>";
 
       // historyDom += "<br/>"; /* ToDo 9 */
