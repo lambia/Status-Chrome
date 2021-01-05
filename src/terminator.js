@@ -11,7 +11,7 @@ class Terminator {
 
         chrome.storage.sync.get("$history", function(result) {
             //Se non ci sono dati in storage, o in caso di problemi, crea un nuovo array
-            if(!result.$history || !result.$history.length || !result.$history.length>0 || !result.$history.length<=10) {
+            if(!result.$history || !result.$history.length || result.$history.length<1 || result.$history.length>10) {
                 chrome.storage.sync.set({ '$history': [] }, function() {});
             }
         });
@@ -65,14 +65,7 @@ class Terminator {
     judge(tab) {
         let self = this;
         let toBeClosed = true;
-        let url = null;
-
-        //Controlla se ha un url
-        if (tab.pendingUrl) {
-            url = tab.pendingUrl;
-        } else if (tab.url) {
-            url = tab.url;
-        }
+        let url = tab.pendingUrl || tab.url || null;
 
         //Se la nuova tab ha un url
         if (url) {
@@ -97,44 +90,39 @@ class Terminator {
             self.suspects.push(tab.id);
         }
 
-        let tabInfo = {
-            from: {
-                tabId: null,
-                title: null,
-                url: null,
-                hostname: null
-            },
-            to: {
-                tabId: tab.id,
-                title: tab.title,
-                url: url,
-                hostname: self.getHostname(url)
-            }
-        };
+        //Se la tab va chiusa
+        if(toBeClosed) {
+            
+            let tabInfo = {
+                to: {
+                    tabId: tab.id,
+                    title: tab.title,
+                    url: url,
+                    hostname: self.getHostname(url)
+                }
+            };
 
-        //Se la c'è una tab chiamante
-        if(tab.openerTabId) {
-            //ToDo: gestire errore
-            chrome.tabs.get(tab.openerTabId, function(result) {
-                //Portala nell'oggetto tabInfo
-                if(result.url) {
-                    tabInfo.from = {
-                        tabId: tab.openerTabId,
-                        title: result.title,
-                        url: result.url,
-                        hostname: self.getHostname(result.url)
-                    };
-                }
-                //E procedi col normale flusso di terminazione
-                //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
-                if(toBeClosed) {
+            //Se c'è un chiamante
+            if(tab.openerTabId) {
+                //Recuperane le informazioni
+                chrome.tabs.get(tab.openerTabId, function(result) {
+                    //Copia le informazioni in tabInfo
+                    if(result.url) {
+                        tabInfo.from = {
+                            tabId: result.id,
+                            title: result.title,
+                            url: result.pendingUrl || result.url,
+                            hostname: self.getHostname(result.pendingUrl || result.url,)
+                        };
+                    }
+                    //Procedi col normale flusso di terminazione
+                    //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
                     self.terminate(tabInfo);
-                }
-            });
-        //Altrimenti ignora e segui il normale flusso di terminazione
-        } else if (!tab.openerTabId && toBeClosed) {
-            //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
-            self.terminate(tabInfo);
+                });
+            } else {
+                //ToDo: aggiungere regole di validazione origin/destination in base a white/blacklist
+                self.terminate(tabInfo);
+            }
         }
 
     }
