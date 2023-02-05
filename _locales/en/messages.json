@@ -1,6 +1,6 @@
 {
     "appName": {
-        "message": "Popup Blocker 2022 - Working!",
+        "message": "Popup Blocker 2023 - Working!",
         "description": "Application Name"
     },
     "appShortName": {
@@ -8,7 +8,7 @@
         "description": "Application Name =< 12 characters (this is 13 but is ok)"
     },
     "appVersion": {
-        "message": "2022 RC4",
+        "message": "2023 RC4",
         "description": "Application Version showed in GUI"
     },
     "appDescription": {

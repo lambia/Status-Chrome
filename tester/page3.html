@@ -1,8 +1,30 @@
 <html>
-<body>
-    <h3>Pagina 3</h3>
-    <script>
-        window.open("https://www.google.it?q=fregato");
-    </script>
-</body>
+    <head>
+        <style>
+            body {
+                margin: 0px;
+                padding: 1em;
+                background-color: #222;
+                color: white;
+                font-family: Helvetica, sans-serif;
+            }
+            #link {
+                cursor: pointer;
+                font-size: 2em;
+            }
+            #link:hover {
+                color: aquamarine;
+                border-bottom: solid 2px aquamarine;
+            }
+        </style>
+        <script>
+            function apriLink() {
+                console.log("Clicked");
+                window.open("https://www.google.it?q=fregato");
+            }
+        </script>
+    </head>
+    <body>
+        <span id="link" onclick="apriLink();">POPUP</span>
+    </body>
 </html>
