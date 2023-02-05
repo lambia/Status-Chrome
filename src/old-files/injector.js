@@ -41,8 +41,8 @@ class Injector {
                 console.log("Open Prevention Code injected.");
                     `,
             allFrames: true,
+            world: "MAIN",
             frameId: 0,
-            
         });
 
         // alert("Open Prevention Code injected.");

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <title data-locale="appShortName">appShortName</title>
+        <link href="./popup.css" rel="stylesheet">
+        <script src="./popup.js"></script>
+    </head>
+    <body>
+        <div id="header" class="container">
+            <div class="title">
+                <div data-locale="appShortName">appShortName</div>
+                <div data-locale="appVersion" class="mini">appVersion</div>
+            </div>
+            <div id="toggleWrapper">
+                <div id="toggleWrapperIcon">
+                    <img id="btnToggleIcon" />
+                </div>
+                <div id="toggleWrapperText">
+                    <a id="btnToggle"></a>
+                </div>
+            </div>
+        </div>
+        <div id="toolbar" class="container">
+            <!-- ToDo: localize -->
+            <button id="btnLogClean">Azzera log</button>
+            <button id="btnCounterClean">Azzera conteggio</button>
+        </div>
+        <div id="history" class="container"></div>
+    </body>
+</html>
