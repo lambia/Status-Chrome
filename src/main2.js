@@ -1,20 +1,33 @@
-chrome.tabs.onUpdated.addListener(function (tabId, changedInfo, tab) {
-    //Se la protezione è attiva e l'oggetto non è vuoto
-    if (tab) {
-        //Se è cambiato l'url
-        if (changedInfo) {
-            //ToDo: beccare anche changedInfo.status
-            if (changedInfo.url) {
-                //ToDo: Prenderlo da protocolli consentiti
-                if(!changedInfo.url.startsWith("chrome://") && !changedInfo.url.startsWith("brave://")) {
 
-                    // const tabId = getCurrentTabId();
-                    if (tabId && tabId >= 0) {
+    function replaceWopenIntoContext(context){
+        let wopen = context.open;
 
-                        console.log("MAIN 2 !");
+        context.open = function() {
+            console.log("Prevented a window", arguments);
+            let ad = wopen.apply(context, arguments);
+            let fake = Object.create(ad);
+            ad.close();
+            return fake;
+        }
+    }
+
+    function replaceWopenIntoArray(array) {
+        if(array) {
+            let length = array.length;
+            if(length) {
+                for (var i = 0; i < array.length; i++) {
+                    if(array[i]) {
+                        if(array[i].length) {
+                            replaceWopenIntoArray(array[i]);
+                        }
+                        replaceWopenIntoContext(array[i]);
                     }
                 }
             }
         }
     }
-});
+
+    replaceWopenIntoContext( window );
+    replaceWopenIntoArray( window.frames );
+
+    
