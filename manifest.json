@@ -1,14 +1,12 @@
 {
-    "manifest_version": 2,
-
+    "manifest_version": 3,
     "name": "__MSG_appName__",
     "short_name": "__MSG_appShortName__",
     "description": "__MSG_appDescription__",
-    "version": "0.9.6.0",
-    "version_name": "2021 RC1",
+    "version": "1.0.0.0",
+    "version_name": "2022 RC4",
     "default_locale": "it",
-
-    "browser_action": {
+    "action": {
         "default_title": "__MSG_appActionToggle__",
         "default_popup": "src/popup.html",
         "default_icon": {
@@ -18,20 +16,33 @@
         }
     },
     "permissions": [
+        "activeTab",
         "tabs",
-        "storage"
+        "storage",
+        "scripting",
+        "webNavigation"
+    ],
+    "host_permissions": [
+        "*://*/*",
+        "<all_urls>",
+        "https://*/",
+        "http://*/",
+        "file:///*"
     ],
     "background": {
-        "page": "main.html"
+        "service_worker": "./src/main.js"
     },
-    "commands": {
-        "toggle": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+1"
-            },
-            "description": "__MSG_appActionToggle__"
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "all_frames": true,
+            "js": [
+                "./src/main2.js"
+            ]
         }
-    },
+    ],
     "icons": {
         "16": "icons/app.png",
         "32": "icons/app.png",
