@@ -1,7 +1,9 @@
 manca un collegamento tra popup e il resto. avviare una classe in worker.
 
+aggiungi CSS per injected html
+
 inietta con blacklist automatica oppure per tutti tranne whitelist
-update manifest v3
+check se update manifest v3 è completo
 spostare metodi helper da Terminator
 controllare che sia funzionale e stateless
 

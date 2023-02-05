@@ -2,8 +2,7 @@ import { text } from "../helpers/resources.js"
 
 class ServiceWorker {
     constructor() {
-        console.info(text("appShortName") + " Service Worker Started");
-
+        console.log( text("appShortName") + ".main-worker.started");
         let self = this;
         this.setListeners();
     }
@@ -31,11 +30,11 @@ class ServiceWorker {
         chrome.tabs.onUpdated.addListener(function (tabId, changedInfo, tab) {
             //Se la protezione è attiva e l'oggetto non è vuoto
             if (tab) {
-                //Se è cambiato l'url
-                if (changedInfo && changedInfo.url) {
-                    //Termina
-                    if (!changedInfo.url.startsWith("chrome://")) {
-                        // Controllare anche per: tab.pendingUrl, tab.url, tab.status (unloaded,loading,complete) ?
+                //ToDo: controlla anche su pendingURL?
+                if (!tab.url.startsWith("chrome://")) {
+                    //Per evitare di triggerare ad ogni lifecycle hook, lo facciamo al completamento
+                    if (changedInfo.status=="complete") {
+                        //Inietta
                         self.inject(tabId);
                     }
                 }
