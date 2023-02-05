@@ -1,7 +1,5 @@
 manca un collegamento tra popup e il resto. avviare una classe in worker.
 
-inietta ogni volta che refreshi
-
 inietta con blacklist automatica oppure per tutti tranne whitelist
 update manifest v3
 spostare metodi helper da Terminator

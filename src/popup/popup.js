@@ -1,16 +1,9 @@
 'use strict';
+import { text, asset } from "../helpers/resources.js"
 
 class Popup {
 
-  res = { //ToDo: use resource service (and prepend "../")
-    browserIcon: {
-        on: "./icons/on.png",
-        off: "./icons/off.png",
-    }
-  };
   document = null;
-
-  $t = (what, override) => new Resources().translator(what, override);
 
   constructor(document) {
     let self = this;
@@ -26,7 +19,7 @@ class Popup {
 
     /* UI LOCALIZATION *********************/
     self.document.querySelectorAll('[data-locale]').forEach(elem => {
-      elem.innerText = chrome.i18n.getMessage(elem.dataset.locale);
+      elem.innerText = text(elem.dataset.locale);
     });
 
     /* EVENT HANDLERS **********************/
@@ -63,10 +56,10 @@ class Popup {
   renderStatus(isEnabled) {
     let self = this;
     self.document.getElementById("btnToggle").innerText = (isEnabled===true) ?
-      chrome.i18n.getMessage("uiEnabledTitle") : chrome.i18n.getMessage("uiDisabledTitle");
+      text("uiEnabledTitle") : text("uiDisabledTitle");
 
     self.document.getElementById("btnToggleIcon").src = (isEnabled===true) ?
-      self.res.browserIcon.on : self.res.browserIcon.off;
+      asset("browserIcon.on") : asset("browserIcon.off");
   }
   
   //Build the DOM from some data

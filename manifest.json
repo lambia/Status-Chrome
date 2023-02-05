@@ -30,7 +30,8 @@
         "file:///*"
     ],
     "background": {
-        "service_worker": "./src/service-worker.js"
+        "service_worker": "./src/workers/main.js",
+        "type": "module"
     },
     "icons": {
         "16": "icons/app.png",
